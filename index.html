@@ -5,89 +5,142 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="每日计划">
-<meta name="theme-color" content="#2f5d50">
+<meta name="theme-color" content="#7c5cff">
 <title>每日计划</title>
 <style>
+@property --p{syntax:'<number>';inherits:true;initial-value:0}
+:root{--ink:#2b2740;--mute:#8b87a3;--line:#ece8f7;--bg:#f7f4ff;--brand:#7c5cff;--pink:#ff7aa2;--card:#fff;--ease:cubic-bezier(.2,.8,.2,1)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f4f2ec;color:#262626;font-size:16px;line-height:1.6;padding-bottom:calc(70px + env(safe-area-inset-bottom))}
-header{position:sticky;top:0;z-index:5;background:#2f5d50;color:#fff;padding:calc(8px + env(safe-area-inset-top)) 12px 8px}
+body{margin:0;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);font-size:16px;line-height:1.6;padding-bottom:calc(84px + env(safe-area-inset-bottom));
+  background:radial-gradient(600px 400px at 100% 0,#ffe3ee 0,transparent 70%),radial-gradient(500px 500px at 0 30%,#e6f7ff 0,transparent 70%),var(--bg);background-attachment:fixed;min-height:100vh}
+button{font-family:inherit;cursor:pointer}
+header{position:sticky;top:0;z-index:5;color:#fff;padding:calc(10px + env(safe-area-inset-top)) 12px 10px;
+  background:linear-gradient(135deg,#6d5dfc 0%,#a35cf0 55%,#ff7aa2 100%);background-size:200% 200%;animation:hue 14s ease-in-out infinite;border-radius:0 0 24px 24px;box-shadow:0 10px 30px -12px rgba(109,93,252,.6)}
+@keyframes hue{50%{background-position:100% 50%}}
 .hrow{display:flex;align-items:center;gap:8px}
-.hrow h1{flex:1;font-size:19px;margin:0}
-#sub{font-size:13px;opacity:.85}
-header button{background:#ffffff26;color:#fff;border:0;border-radius:8px;padding:6px 10px;font-size:15px}
-#strip{display:flex;gap:4px;margin-top:8px}
-.dd{flex:1;background:#ffffff1a;color:#fff;border:0;border-radius:10px;padding:4px 0 6px;font-size:12px;display:flex;flex-direction:column;align-items:center}
-.dd b{font-size:16px}
-.dd i{display:block;width:70%;height:4px;border-radius:2px;background:linear-gradient(90deg,#ffd166 var(--p),#ffffff33 var(--p));margin-top:2px}
-.dd.on{background:#fff;color:#2f5d50}
-.dd.td b{text-decoration:underline}
+.hrow h1{flex:1;font-size:20px;margin:0;letter-spacing:.5px}
+header button{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:12px;padding:7px 11px;font-size:15px;backdrop-filter:blur(6px);transition:transform .15s,background .2s}
+header button:active{transform:scale(.92);background:rgba(255,255,255,.32)}
+#ring{--p:0;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;transition:--p .8s var(--ease);
+  background:conic-gradient(#fff calc(var(--p)*1%),rgba(255,255,255,.25) 0)}
+#ring::before{content:'';grid-area:1/1;width:36px;height:36px;border-radius:50%;background:#8e5cf2}
+#sub{grid-area:1/1;position:relative;font-size:12px;font-weight:700}
+#strip{display:flex;gap:5px;margin-top:10px}
+.dd{flex:1;position:relative;background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:14px;padding:5px 0 7px;font-size:12px;display:flex;flex-direction:column;align-items:center;transition:transform .25s var(--ease),background .25s}
+.dd b{font-size:17px;line-height:1.3}
+.dd i{display:block;width:60%;height:4px;border-radius:2px;background:linear-gradient(90deg,#ffd23f var(--p),rgba(255,255,255,.3) var(--p));margin-top:3px}
+.dd.on{background:#fff;color:var(--brand);transform:translateY(-2px) scale(1.06);box-shadow:0 6px 16px -6px rgba(0,0,0,.3)}
+.dd.on i{background:linear-gradient(90deg,var(--pink) var(--p),#eee var(--p))}
+.dd.td::after{content:'';position:absolute;top:4px;right:6px;width:6px;height:6px;border-radius:50%;background:#ffd23f}
+.dd.ex::before{content:'🚁';position:absolute;top:-6px;left:-2px;font-size:12px}
+.dd.full b{color:#ffd23f}.dd.on.full b{color:var(--pink)}
 .dd:disabled{opacity:.3}
-main{max-width:760px;margin:0 auto;padding:10px}
-.stage{background:#fff;border-radius:14px;padding:10px 14px;margin-bottom:10px;border-left:5px solid #ffd166}
-.sname{font-weight:600;color:#2f5d50}
-.goals label{display:flex;gap:8px;font-size:14px;padding:3px 0}
-.goals input{width:18px;height:18px;flex-shrink:0;margin-top:2px}
-.item{display:flex;gap:10px;background:#fff;border-radius:12px;padding:10px;margin:6px 0;border-left:5px solid #ccc;align-items:flex-start}
-.item .tm{width:46px;flex-shrink:0;font-size:14px;font-weight:600;color:#555}
-.item .tm span{font-weight:400;color:#999;font-size:12px}
-.item .bd{flex:1;min-width:0}
-.item .tt{font-weight:600}
-.item .dt{display:none;font-size:14px;color:#444;margin-top:6px}
-.item.open .dt{display:block}
-.item .dt table{border-collapse:collapse;width:100%;font-size:13px;margin:6px 0}
-.item .dt td,.item .dt th,.card td,.card th{border:1px solid #e3e0d6;padding:4px 6px;text-align:left;vertical-align:top}
-.item .dt ol,.item .dt ul{padding-left:20px;margin:4px 0}
-.ck{width:32px;height:32px;flex-shrink:0;border-radius:50%;border:2px solid #2f5d50;background:#fff;color:#fff;font-size:18px;font-weight:700}
-.item.done{opacity:.55}
-.item.done .ck{background:#2a9d4b;border-color:#2a9d4b}
-.item.done .tt{text-decoration:line-through}
-.item.now{box-shadow:0 0 0 2px #ffd166}
-.nowtag{background:#ffd166;color:#333;font-size:11px;padding:1px 6px;border-radius:8px}
-.c-run,.c-gym{border-left-color:#e76f51}.c-meal{border-left-color:#f4a261}.c-cls,.c-school{border-left-color:#6c8ebf}
-.c-biz,.c-hl,.c-meet{border-left-color:#2f5d50}.c-eng,.c-gram,.c-word,.c-wrev,.c-listen{border-left-color:#9b5de5}
-.wd{display:flex;gap:10px;background:#faf8ff;border-radius:10px;padding:8px 10px;margin:8px 0}.wd .ph{color:#6a4c93;font-family:"Lucida Sans Unicode","Arial Unicode MS",sans-serif}.wd .pos{color:#999;font-size:13px}.wzh{font-size:15px}.wex{font-size:14px;color:#333;margin-top:4px}.wex span{color:#777}.say2{border:0;background:#9b5de5;color:#fff;border-radius:50%;width:26px;height:26px;font-size:11px}.c-ai{border-left-color:#00a6a6}
-.c-read,.c-news{border-left-color:#b08968}.c-go,.c-back{border-left-color:#999}.c-rest,.c-free,.c-wake,.c-review,.c-prep{border-left-color:#bbb}
-.tip{color:#8a5a2b;font-size:13px}
-.open{display:block;margin:4px 0;padding:8px 12px;border-radius:8px;border:0;background:#9b5de5;color:#fff;font-size:14px}
-.log,.card{background:#fff;border-radius:14px;padding:10px 14px;margin:10px 0}
-.log h3,.card h3{margin:4px 0 8px;color:#2f5d50;font-size:17px}
-.log label{display:block;font-size:14px;margin:8px 0;color:#555}
-.log input,.log textarea{display:block;width:100%;font-size:16px;padding:8px;border:1px solid #ddd;border-radius:8px;margin-top:4px;font-family:inherit}
+main{max-width:760px;margin:0 auto;padding:12px}
+main.enter>.card,main.enter>.stage,main.enter>.log,main.enter .item{animation:up .5s var(--ease) both;animation-delay:calc(min(var(--i,0),14)*35ms)}
+@keyframes up{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.stage{background:var(--card);border-radius:20px;padding:12px 16px;margin-bottom:12px;box-shadow:0 8px 24px -14px rgba(80,60,180,.35);position:relative;overflow:hidden}
+.stage::before{content:'';position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#6d5dfc,#ff7aa2,#ffd23f)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 6px}
+.chip{font-size:12px;padding:2px 10px;border-radius:20px;background:#f0ecff;color:var(--brand);font-weight:600}
+.chip.hot{background:linear-gradient(90deg,#ff4d8d,#ff9a5a);color:#fff;animation:beat 2.4s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}8%{transform:scale(1.06)}16%{transform:scale(1)}}
+.sname{font-weight:700;font-size:17px}
+.goals label{display:flex;gap:8px;font-size:14px;padding:4px 0;align-items:flex-start}
+.goals input{appearance:none;-webkit-appearance:none;width:20px;height:20px;flex-shrink:0;margin-top:1px;border-radius:6px;border:2px solid #cfc6f5;transition:all .2s;display:grid;place-items:center}
+.goals input:checked{background:var(--brand);border-color:var(--brand)}
+.goals input:checked::after{content:'✓';color:#fff;font-size:13px;font-weight:700}
+.goals input:checked+span{color:var(--mute);text-decoration:line-through}
+.stop{font-size:13px;color:#c2410c;background:#fff4ec;border-radius:10px;padding:6px 10px;margin:8px 0 2px}
+.item{--c:#a3a8c3;position:relative;display:grid;grid-template-columns:44px 36px 1fr 36px;gap:10px;align-items:start;background:var(--card);border-radius:18px;padding:12px 12px 12px 14px;margin:8px 0;
+  box-shadow:0 6px 18px -12px rgba(80,60,180,.4);overflow:hidden;transition:opacity .35s,transform .2s var(--ease),box-shadow .3s}
+.item::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:4px;border-radius:0 4px 4px 0;background:var(--c)}
+.item.has:active{transform:scale(.985)}
+.item .tm{font-size:14px;font-weight:700;color:var(--ink);line-height:1.25;padding-top:6px}
+.item .tm span{display:block;font-weight:400;color:var(--mute);font-size:12px}
+.item .ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-size:19px;background:#f3f0ff;background:color-mix(in srgb,var(--c) 16%,#fff)}
+.item .bd{min-width:0;padding-top:6px}
+.item .tt{font-weight:600;background:linear-gradient(currentColor,currentColor) no-repeat 0 55%/0 1.5px;transition:background-size .45s var(--ease),color .3s;display:inline}
+.item.has .bd::after{content:'展开 ›';display:block;font-size:12px;color:var(--mute);margin-top:2px;transition:opacity .2s}
+.item.open .bd::after{content:'收起 ‹'}
+.dtw{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s var(--ease)}
+.item.open .dtw{grid-template-rows:1fr}
+.dt{min-height:0;overflow:hidden;font-size:14px;color:#4a4560}
+.item.open .dt{padding-top:8px}
+.dt table{border-collapse:collapse;width:100%;font-size:13px;margin:6px 0}
+.dt td,.dt th,.card td,.card th{border:1px solid var(--line);padding:5px 7px;text-align:left;vertical-align:top}
+.dt th,.card th{background:#faf8ff}
+.dt ol,.dt ul{padding-left:20px;margin:4px 0}
+.drt{display:block;font-size:13px;color:var(--mute);margin-top:8px}
+.drt input{display:block;width:120px;font-size:16px;padding:6px 10px;border:2px solid var(--line);border-radius:10px;margin-top:4px;font-family:inherit}
+.ck{width:34px;height:34px;margin-top:2px;border-radius:50%;border:2px solid #d6cff5;background:#fff;padding:0;display:grid;place-items:center;transition:all .3s var(--ease)}
+.ck svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .35s .1s var(--ease)}
+.ck:active{transform:scale(.85)}
+.item.done{opacity:.62}
+.item.done .ck{background:linear-gradient(135deg,#2ec4b6,#5bd68a);border-color:transparent;box-shadow:0 4px 12px -4px #2ec4b6}
+.item.done .ck svg{stroke-dashoffset:0}
+.item.done .tt{background-size:100% 1.5px;color:var(--mute)}
+.item.pop .ck{animation:pop .45s var(--ease)}
+@keyframes pop{40%{transform:scale(1.3)}100%{transform:scale(1)}}
+.item.now{box-shadow:0 0 0 2px var(--c),0 10px 26px -10px var(--c);animation:glow 2.2s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 35%,transparent),0 10px 26px -10px var(--c)}}
+.nowtag{background:var(--c);color:#fff;font-size:11px;padding:1px 8px;border-radius:10px;vertical-align:2px}
+.c-run,.c-gym{--c:#ff6b6b}.c-meal{--c:#ffa94d}.c-cls,.c-school{--c:#4d96ff}.c-biz{--c:#7c5cff}
+.c-drone{--c:#ff4d8d}.c-exam{--c:#e63946}.c-word,.c-wrev,.c-gram,.c-listen{--c:#2ec4b6}.c-read{--c:#c08b5c}.c-makeup{--c:#ff7ac6}
+.c-go,.c-back{--c:#8a94a6}.c-meet{--c:#ffb84d}
+.c-exam .tt{color:#e63946}
+.tip{color:#9a6b2f;font-size:13px}
+.lopen{display:block;margin:6px 0;padding:9px 14px;border-radius:12px;border:0;background:linear-gradient(135deg,#2ec4b6,#4d96ff);color:#fff;font-size:14px}
+.log,.card{background:var(--card);border-radius:20px;padding:12px 16px;margin:12px 0;box-shadow:0 8px 24px -14px rgba(80,60,180,.35)}
+.card.hero{background:linear-gradient(135deg,#f0ecff,#ffeef5)}
+.log h3,.card h3{margin:4px 0 8px;font-size:17px;background:linear-gradient(90deg,#6d5dfc,#ff4d8d);-webkit-background-clip:text;background-clip:text;color:transparent}
+.log label{display:block;font-size:14px;margin:10px 0;color:var(--mute)}
+.log input,.log textarea{display:block;width:100%;font-size:16px;padding:10px 12px;border:2px solid var(--line);border-radius:12px;margin-top:4px;font-family:inherit;color:var(--ink);transition:border-color .2s,box-shadow .2s;background:#fdfcff}
+.log input:focus,.log textarea:focus,.drt input:focus{outline:0;border-color:var(--brand);box-shadow:0 0 0 4px rgba(124,92,255,.15)}
 .card table{border-collapse:collapse;width:100%;font-size:13px}
-.card tr[data-go]{cursor:pointer}
-.card ul{padding-left:20px}
-.part{font-size:13px;color:#888;margin:10px 0 2px}
-.lrow{display:block;width:100%;text-align:left;background:#f7f5ef;border:0;border-radius:8px;padding:9px 10px;margin:3px 0;font-size:15px;color:#262626}
-nav{position:fixed;bottom:0;left:0;right:0;z-index:6;display:flex;background:#fff;border-top:1px solid #ddd;padding-bottom:env(safe-area-inset-bottom)}
-nav button{flex:1;border:0;background:none;padding:8px 0;font-size:12px;color:#777}
-nav button b{display:block;font-size:20px;font-weight:400}
-nav button.on{color:#2f5d50;font-weight:600}
-#lesson{position:fixed;inset:0;z-index:9;background:#f4f2ec;overflow-y:auto;padding:calc(10px + env(safe-area-inset-top)) 14px 40px;display:none;-webkit-overflow-scrolling:touch}
-#lesson.show{display:block}
-.lhead{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#888}
-.lhead button,.lbtn button{border:0;border-radius:8px;padding:8px 12px;background:#2f5d50;color:#fff;font-size:15px}
-#lesson h2{color:#2f5d50;border-bottom:3px solid #ffd166}
-#lesson .note{background:#fffdf5;border:2px dashed #e0b84c;border-radius:10px;padding:4px 12px}
+.card tr[data-go]{cursor:pointer;transition:background .2s}.card tr[data-go]:active{background:#f3f0ff}
+.card ul,.card ol{padding-left:20px}
+.steps li{margin:6px 0}
+.part{font-size:13px;color:var(--mute);margin:12px 0 4px;font-weight:600}
+.lrow{display:block;width:100%;text-align:left;background:#f7f5ff;border:0;border-radius:12px;padding:10px 12px;margin:4px 0;font-size:15px;color:var(--ink);transition:transform .15s,background .2s}
+.lrow:active{transform:scale(.98);background:#ece7ff}
+nav{position:fixed;bottom:calc(8px + env(safe-area-inset-bottom));left:8px;right:8px;z-index:6;display:flex;max-width:744px;margin:0 auto;background:rgba(255,255,255,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:22px;padding:5px;box-shadow:0 10px 30px -10px rgba(80,60,180,.45)}
+nav button{flex:1;border:0;background:none;padding:5px 0;font-size:11px;color:var(--mute);border-radius:16px;transition:color .25s,background .3s var(--ease)}
+nav button b{display:block;font-size:20px;font-weight:400;transition:transform .35s var(--ease)}
+nav button.on{color:var(--brand);font-weight:700;background:linear-gradient(135deg,#efeaff,#ffe9f1)}
+nav button.on b{transform:translateY(-2px) scale(1.15);animation:bob .5s var(--ease)}
+@keyframes bob{40%{transform:translateY(-6px) scale(1.2)}}
+#lesson{position:fixed;inset:0;z-index:9;background:var(--bg);overflow-y:auto;padding:calc(12px + env(safe-area-inset-top)) 16px 40px;display:none;-webkit-overflow-scrolling:touch}
+#lesson.show{display:block;animation:slide .35s var(--ease)}
+@keyframes slide{from{transform:translateY(30px);opacity:0}}
+.lhead{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mute)}
+.lhead button,.lbtn button{border:0;border-radius:12px;padding:9px 14px;background:var(--brand);color:#fff;font-size:15px}
+#lesson h2{color:var(--brand);border-bottom:3px solid #ffd23f}
+#lesson .note{background:#fffdf5;border:2px dashed #e0b84c;border-radius:12px;padding:4px 12px}
 #lesson .note b{color:#c0392b}
 #lesson table{border-collapse:collapse;width:100%;font-size:14px}
-#lesson td,#lesson th{border:1px solid #d9c98f;padding:4px 6px}
-.ex{display:flex;gap:10px;background:#fff;border-radius:10px;padding:8px 10px;margin:8px 0}
-.play{width:38px;height:38px;flex-shrink:0;border-radius:50%;border:0;background:#2f5d50;color:#fff}
+#lesson td,#lesson th{border:1px solid #e3dcff;padding:4px 6px}
+.ex{display:flex;gap:10px;background:#fff;border-radius:14px;padding:10px 12px;margin:8px 0;box-shadow:0 4px 14px -10px rgba(80,60,180,.4)}
+.play{width:38px;height:38px;flex-shrink:0;border-radius:50%;border:0;background:linear-gradient(135deg,#7c5cff,#ff7aa2);color:#fff}
 .en{font-size:18px;font-family:Georgia,serif}
-.q{background:#fff;border-radius:10px;padding:10px;margin:10px 0}
-.opt{margin:4px 6px 4px 0;padding:6px 12px;font-size:16px;border-radius:8px;border:2px solid #2f5d50;background:#fff}
-.opt.right{background:#2a9d4b;color:#fff;border-color:#2a9d4b}.opt.wrong{background:#e76f51;color:#fff;border-color:#e76f51}
+.q{background:#fff;border-radius:14px;padding:12px;margin:10px 0}
+.opt{margin:4px 6px 4px 0;padding:7px 14px;font-size:16px;border-radius:12px;border:2px solid #d6cff5;background:#fff;transition:all .2s}
+.opt.right{background:#2ec4b6;color:#fff;border-color:#2ec4b6;animation:pop .4s}.opt.wrong{background:#ff6b6b;color:#fff;border-color:#ff6b6b;animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .lbtn{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
-.lbtn .mk{background:#2a9d4b}
-#exp,.imp{border:0;border-radius:8px;padding:8px 12px;background:#2f5d50;color:#fff;font-size:15px;display:inline-block}
+.lbtn .mk{background:#2ec4b6}
+#exp,.imp{border:0;border-radius:12px;padding:9px 14px;background:var(--brand);color:#fff;font-size:15px;display:inline-block}
 .imp input{display:none}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:20;overflow:hidden}
+.confetti i{position:absolute;top:-12px;width:8px;height:12px;border-radius:2px;animation:fall 1.8s cubic-bezier(.3,.6,.5,1) forwards}
+@keyframes fall{to{transform:translate(var(--x),105vh) rotate(var(--r));opacity:.9}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <header>
-  <div class="hrow"><button id="prev">‹</button><h1 id="title"></h1><span id="sub"></span><button id="today">今天</button><button id="next">›</button></div>
+  <div class="hrow"><button id="prev" aria-label="前一天">‹</button><h1 id="title"></h1><div id="ring"><span id="sub"></span></div><button id="today">今天</button><button id="next" aria-label="后一天">›</button></div>
   <div id="daybar"><div id="strip"></div></div>
 </header>
 <main id="main"></main>
@@ -97,7 +150,7 @@ nav button.on{color:#2f5d50;font-weight:600}
   <button data-tab="week"><b>🗓️</b>本周</button>
   <button data-tab="gym"><b>🏋️</b>训练</button>
   <button data-tab="food"><b>🥗</b>饮食</button>
-  <button data-tab="words"><b>🔤</b>单词</button>
+  <button data-tab="eng"><b>🔤</b>英语</button>
   <button data-tab="gram"><b>📘</b>语法</button>
   <button data-tab="help"><b>ℹ️</b>说明</button>
 </nav>
@@ -1603,7 +1656,8 @@ LESSONS.push({id:'final', part:'第8部分 总复习', title:'49. 总测验', bo
 
 ;
 // 课程表、训练、饮食、跑步
-const PLAN_START = '2026-11-15', PLAN_END = '2026-12-27';
+// 2026-11-24 起按新方案重排；语法课仍从 11-15 起算，不会重头再学
+const PLAN_START = '2026-11-24', PLAN_END = '2026-12-27', GRAM_FROM = '2026-11-15';
 const PERIOD = {3: ['10:20', '11:50'], 5: ['14:00', '15:30'], 7: ['15:50', '17:20'], 9: ['18:30', '20:00']};
 const CN = {jg: '金融工程学', xs: '形势与政策Ⅴ', jj: '投资基金管理', th: '投资银行理论与实务', wq: '网球', lc: '金融理财原理'};
 const WED = [[3, 'jj', ''], [5, 'th', ''], [7, 'wq', '']];
@@ -1705,1315 +1759,130 @@ const MEAL_RULES = [
 ];
 
 ;
-// 学习内容：按学校周（10～16 周）对应手册阶段 A 第 2～8 周
+// 学习和业务内容：业务按《广州OPC独立站项目计划书》第 12 章前 90 天，第 12 周（11/23）= 第 1 周
 // 每周 7 天（下标 0=周一 … 6=周日）
 
-// 2026-11-15 重排：阿曼项目从今天开始，第一次出差改到开斋节后（2027 年 3 月下旬～4 月）。
-// 阶段 A 拉长到约 17 周；这 6 周只做国内部分：资质、选品、询价、成本表
 const STAGE = {
-  10: {name: '启动日：阿曼项目从今天开始', goal: ['今晚和家人开项目启动会（手册 1.5、5.1）', '查清期末考试和寒假日期'], level: '第 0 → 1 级'},
-  11: {name: '阶段 0 第 1 周：查清新公司 + 导出数据 + 做样品', goal: ['在公示系统查爸爸新公司的登记信息，截图存好（新手册 2.9）', '华磊系统数据全部导出，存两份（2.7）', '开始做“公司还有哪些钱没了结”表（2.1）', '路线一：用假数据做出第一份报价表和对账表样品（3.2）'], level: '第 1 级'},
-  12: {name: '阶段 0 第 2 周：工具通用化 + 服务说明 + 简历', goal: ['报价工具能读 3 种不同格式的价格表，加好自检（3.3）', '写好服务说明、前后对比图、保密承诺（3.2、3.7）', '简历写好，投出 5 份实习（第 4 章）', '和爸爸聊一次新公司的事（2.9）'], level: '第 1 → 2 级'},
-  13: {name: '阶段 0 第 3 周：找第一批试用客户', goal: ['在 3 个群或平台发介绍，发 2 条小红书（3.4）', '打 3 个中文电话介绍服务（第 2 级过关）', '至少 1 家同意免费试用', '员工补偿表做好给家人（2.4）'], level: '第 2 级'},
-  14: {name: '阶段 0 第 4 周：交付试用，争取第一笔收入', goal: ['完成 1～2 家试用交付（3.6）', '至少 1 家付费', '至少参加 1 次实习面试', '问律师和会计的问题清单交给家人（2.6、2.9）'], level: '第 2 → 3 级'},
-  15: {name: '阶段 0 第 5 周：考试前两周，减量', goal: ['只交付已经答应的单，不接新客户', '阶段 0 进度检查（新手册 6.1）', '期末复习为主'], level: '第 3 级'},
-  16: {name: '阶段 0 第 6 周：期末 + 复盘', goal: ['期末复习和考试', '复盘 6 周：收入多少、几家客户、实习结果、家里收尾到哪一步', '和家人定寒假安排（阶段 1）'], level: '第 3 级'}
+  12: {name: '独立站第 1 周：问清收款，定主体', goal: ['问两家收单机构：我的主体类型能不能收美国信用卡（计划书第 12 章）', '选定南沙一人公司或个体户，准备真实地址和 3～5 个字号（4.2）', '无人机题库第一遍刷到一半'], stop: '两家都说不能收，就先解决收款，不办一个用不上的执照。'},
+  13: {name: '独立站第 2 周：提交办照，找代账', goal: ['在一网通提交办照，约银行（4.3）', '联系代账，问就业创业证去哪办（5.1、5.3）', '无人机题库第一遍刷完，开始模拟考试'], stop: '地址被退回，就换真实地址，不找人改材料。'},
+  14: {name: '独立站第 3 周：领照、税务报到、发样品', goal: ['12 月 8 日无人机理论考试', '执照下来，电子税务局报到，银行资料交齐（4.3、6.8）', '列出 10 款候选，发出 3～5 个样品款（7.3、7.4）'], stop: '账户没有进度，先不建站投流。'},
+  15: {name: '独立站第 4 周：样品试用 + 建站（期末复习为主）', goal: ['样品到手，自己用 3 天，留下 1 款（7.4）', '注册域名，开 Shopify，货币设美元（8.1）', '期末复习'], stop: '样品和页面不一致，先重拍，不投广告。'},
+  16: {name: '独立站第 5 周：页面写全，提交收单（期末周）', goal: ['网站页面写全：详情、配送、退换货、隐私、联系（8.1）', '提交收单（PayPal 企业账户或连连）', '期末考试'], stop: '收单没通过，可以继续发内容，但不把购买按钮开放给广告。'}
 };
-// 6 周以后的安排（新手册 6.1 阶段 1），在“本周”页显示
+// 第 6 周以后（计划书 12.1），在“本周”页显示
 const ROADMAP = [
-  ['2027 年 1 月（寒假）', '路线一做到 5 家固定客户；寒假实习可以全职；开 WhatsApp Business，整理阿曼 100 家店铺名单（新手册 5.5）；比较 3 家中东 DDP 专线，五个问题逐条问、截图存档（5.3）。开口第 4 级：英文 WhatsApp。'],
-  ['2～3 月（大约 2 月 8 日到 3 月 9 日是斋月）', '大三下学期，实习每周 2～3 天；阿曼每周 5～8 小时，每周发 10～15 条 WhatsApp，斋月期间少发、不催单。原定 3 月下旬去阿曼的考察已经取消。'],
-  ['4～6 月', '春季广交会（4～5 月）试一次“陪同采购”（5.5 第 5 条）；路线一做到 8 家左右。阶段 1 的结束条件：连续 3 个月每月收入 ≥ 5,000 元，阿曼有 3 家以上来回问过价（6.1）。'],
-  ['7 月以后', '满足条件后开始接阿曼佣金代采购单，第一单货值 ≤ 3,000 美元（第 5 章）。去阿曼要等做完 3 单、路费能从收入里出（6.1 阶段 3）。']
+  ['第 6 周（2027 年 1 月第 1 周）', '物流按实重向云途、燕文、4PX 询价，售价重算；主页发满 5 条真实内容；提交企业广告户。'],
+  ['第 7～8 周', '每天 30～50 美元，只测这一款、只测美国。能发的订单当天回传单号。累计花到约 200 美元仍没人买，或扣完货和运费还亏，就停广告，回到第 4 周换品。'],
+  ['第 9～10 周', '按第 10 章的周表运转：周一看数字、周二拍剪、周三投放、周四看货、周五对钱，每天 30 分钟客服和发货。客服问题写进页面。'],
+  ['第 11～12 周', '做一次完整月度账，和代账对一遍申报。账对不上，先对账，不放大预算。'],
+  ['90 天后问自己三句', '① 有没有一款产品扣完货款、运费、手续费和广告还剩钱？② 工厂还能按这个量供货吗？③ 税和银行是不是同一个主体？三句都是“是”，才加预算或复制到英国。']
 ];
 
-// 业务主任务：[标题, 做法, 是否外出]。依据《新方案实战手册（货代关闭后）》
+// 业务主任务：[标题, 做法]。期末周每件控制在 1 小时内
 const BIZ = {
-  10: {6: ['准备今晚的项目启动会', '阿曼项目从今天开始。读手册 1.5（家人签字权限表）和 5.1 阶段 A，列一张“今晚要和家人确认的事”：① 权限表；② 第一年预算上限（建议 30～40 万元，含周转）；③ 每周周会时间（建议周日 19:00）；④ 营业执照有没有“货物进出口”、海关有没有收发货人备案、是不是一般纳税人、有没有出口退税备案、外币账户情况，谁知道答案；⑤ 护照；⑥ 第一次去阿曼改到开斋节后（2027 年 3 月下旬～4 月），要向学校请假约 10 天，谁陪你去。']},
-  11: [
-    ['新公司：在公示系统查登记信息', '在国家企业信用信息公示系统（gsxt.gov.cn）搜爸爸新注册的公司，看三项：① 你只是法定代表人，还是也是股东、执行董事或经理；② 注册资本多少、认缴期限多久；③ 股东有哪几个人。截图存进手机相册（新手册 2.9 第 1 步）。剩下的时间读新手册第 1、2 章。'],
-    ['问家人：华磊系统用到哪天', '时间短，只做这一步：在家庭群问清楚华磊系统用到哪天、你的账号还能不能登。系统停用前必须把数据导完（新手册 2.7）。'],
-    ['列华磊要导出的数据清单', '运单、应收应付、客户和供应商资料、对账记录、成本价设置。每项写清楚在系统哪个页面导、导成什么格式。'],
-    ['路线一：造假数据', '让 AI 生成一份虚构的快递红单分区价格表（10 个分区、0.5～70 公斤）、一份燃油附加费通知、一份 200 票的虚构账单和系统数据，故意埋 15 处差异（新手册 3.2 第 1 步）。<b>不用家里公司的真实数据。</b>'],
-    ['华磊：导出全部数据，存两份', '按周三的清单逐项导出成 Excel，存到电脑和网盘（或移动硬盘）各一份。只导出，不改、不删系统里的任何数据。导完在家庭群说一声。不会操作的地方，在电脑上让 Claude 用 hualei-tms 带你做。'],
-    ['路线一：用自己的工具跑一遍假数据', '用报价工具做出对外报价表，用对账工具找埋的 15 处差异。找不全的，记下是哪种差异，下周改工具（3.3）。'],
-    ['周日不安排新任务', '补这周没做完的。']
-  ],
   12: [
-    ['路线一：工具通用化（收集格式）', '在网上和行业群收集 5 种以上不同格式的分区价格表（UPS、DHL、FedEx、各家专线）。在 Claude Code 里让报价工具先识别表头里的分区和重量列，再计算（新手册 3.3 第 1 步）。'],
-    ['简历：写“实践经历”一段', '时间短，只做这一步：照新手册 4.3 的样例写，数字用你自己真实的。'],
-    ['路线一：给工具加自检', '输出前自动检查：每个分区都有价格、重量段连续、加价后不低于成本、合计和原表一致（3.3 第 2 步）。用 3 份不同格式的假数据各测一遍。'],
-    ['简历定稿，投 5 份实习', 'BOSS 直聘、实习僧搜“外贸跟单 实习”“外贸单证 兼职”“采购助理 实习”，地点广州，优先做中东市场的公司（4.1、4.2）。同时问辅导员和就业办有没有合作的实习单位，请家人问一句相熟的外贸公司。'],
-    ['路线一：做前后对比图 + 服务说明', '左边原始表、右边你交付的表，下面写用时和找出的差异数。再写一页服务说明：做什么、要对方给什么、多久交付、多少钱、怎么保密、赔偿以本次服务费为限（3.2、3.7）。做成能在微信发的长图或 PDF。'],
-    ['路线一：保密承诺 + 话术 + 潜水看群', '用 AI 起草《数据保密承诺书》（3.7）；把 3.5 的五段话术改成你自己的话，存进手机备忘录。再进 2～3 个货代群潜水，看大家在用哪些上家、常问什么。'],
-    ['周日不安排新任务', '补这周没做完的。还没和爸爸聊新公司的事，今天找个时间平静地聊（2.9 第 2 步）。']
+    ['读计划书第 1、3 章', '把止损线（同一款广告约 200 美元没人买就停）和测试金（1.5～3 万元）抄进手机备忘录。'],
+    ['读计划书第 1、3、4 章，抄下止损线', '把止损线和测试金抄进手机备忘录。再读第 4 章，弄清个体户和一人有限公司的区别（4.1 表）。'],
+    ['问第 1 家收单机构：PayPal', '在 PayPal 官网商家页面或客服问：中国大陆的一人有限公司（或个体工商户）能不能开 PayPal 企业账户，收美国买家的信用卡付款？要什么材料？回复截图存进 D:\\独立站搭建\\01 执照银行。'],
+    ['问第 2 家收单机构：连连全球收单', '同样的问题问连连（或其他收单机构）：个体户行不行，一人公司行不行，要不要先有网站。截图存好（8.2）。'],
+    ['定主体：南沙一人公司还是个体户', '只看两件事（第 3 章第 02 步）：① 你有没有真实地址（房产证或你名下的租赁合同）；② 两家收单机构认不认个体户。计划书默认南沙一人公司。两家都说不能收，先停在这里解决收款。'],
+    ['准备办照材料', '① 想好 3～5 个字号（4.2）；② 在 jyfwyun.com 查经营范围规范用词：互联网销售（除销售需要许可的商品）、日用百货、货物进出口、技术进出口；③ 准备一个不会停用的邮箱，不用学校邮箱；④ 地址材料拍照。'],
+    ['周日不安排新任务', '补这周没做完的。']
   ],
   13: [
-    ['路线一：在 3 个群或平台发介绍', '用新手册 3.5 的第一条消息，一个群只发一次。再发 1 条小红书图文：用假数据演示“一小时做完报价表”（3.4）。'],
-    ['回复咨询消息', '时间短，只做这一步。有人问就按 3.5 回答，记进客户表。'],
-    ['私信 10 家在招单证、报价员的小货代', '在 BOSS 直聘、58 同城找，用中文私信老板（3.4 的话术），不要冒充求职者。'],
-    ['第 2 级开口：给 3 家小货代打电话', '电话里讲 3.5 第一条消息的意思，邀请免费试用。打通 3 个就过关，结果记进客户表。'],
-    ['确认第一家试用的需求', '有人同意试用，就按 3.6 第 1 步确认格式、加价规则、交付时间，让对方回“确认”，并提醒对方先脱敏。还没人同意的，再发 2 个群、私信 5 家。'],
-    ['投 5 份实习 + 发第 2 条小红书', '实习继续投（4.2）。第 2 条内容：小货代对账最常漏的 5 种附加费（AI 起草，你改）。'],
-    ['周日不安排新任务', '补这周没做完的。']
+    ['在一网通提交办照', '微信小程序“广州市开办企业一网通”或 scjgj.gz.gov.cn/ywt/。一次提交时同时预约营业执照、印章、发票和税务 UKey、银行开户（4.3）。联络员手机用你自己的号。'],
+    ['问学校：就业创业证在哪办', '时间短，只做这一步：问就业指导中心，《就业创业证》去哪个区办、要什么材料，证上能不能注明“自主创业”（5.1）。'],
+    ['找 2～3 家代账', '问三件事：一年多少钱；能不能说清 9610 和经营所得的区别；领照当月能不能开始（5.3）。选肯用白话解释的。'],
+    ['看办照进度 + 列银行要问的问题', '看一网通审核到哪。列出银行开户时会被问的：网站是什么、卖什么、钱从哪来。地址被退回就换真实地址。'],
+    ['选品：在 1688 找 5 款候选', '按 7.3 标准：400 克以内、没有电池液体粉末磁铁、能卖 25～60 美元、10 秒能看懂、至少两家工厂能做、没有商标。先看厨房家居小工具、宠物喂养小件、出行收纳（7.4）。'],
+    ['选品：再找 5 款，凑满 10 款', '每款写一句英文痛点（可以让 Claude 帮你改英文）。记进 D:\\独立站搭建\\03 产品：链接、价格、重量、为什么选它。'],
+    ['周日不安排新任务', '补这周没做完的。后天考无人机，今天以刷题为主。']
   ],
   14: [
-    ['路线一：交付第 1 家试用', '按新手册 3.6 走：工具跑 → 自检 → 你抽查 10% → 附说明交付。交付后约好 2 天内给反馈。'],
-    ['回复客户和面试消息', '时间短，只做这一步。'],
-    ['准备实习面试', '用 4.3 的回答练“为什么不在家里公司做了”；准备 3 封英文外贸邮件（询价回复、催货、发货通知），让 AI 当面试官考你。'],
-    ['跟进第 1 家，交付第 2 家', '第 1 家满意的，按 3.5“嫌贵”那段报正式价格，争取按月；不满意的问清楚哪里不好，写进教训本（7.5）。'],
-    ['争取第 1 笔收入', '目标至少 1 家付费，先收款再交付（试用除外）。到账后填收入表；删除试用客户的原始资料，并告诉对方“资料已删除”（3.6 第 6 步）。'],
-    ['实习面试，或者再投 5 份 + 发第 3 条内容', '有面试就去（出门前读一遍 4.3）；没有就再投 5 份，并发第 3 条小红书。'],
+    ['只看执照审核进度（5 分钟）', '明天考试，业务今天只看一眼进度。'],
+    ['考试日：业务不做', '考完休息。'],
+    ['领执照 + 下载电子营业执照', '领到 24 小时内：下载电子营业执照，改初始密码，把统一社会信用代码抄进备忘录（4.3）。还没下来就继续选品。'],
+    ['电子税务局报到', '用法人身份登录，确认小规模纳税人、按季申报，税种核定截图存进 02 税务（6.8）。执照没下来就跳过，改做明天的事。'],
+    ['银行资料交齐 + 和代账签约', '去银行面签，U 盾不和身份证放同一个包（4.3）。和选好的代账签合同，把报税日写进手机日历。'],
+    ['10 款里挑 3～5 款下单样品', '只给能用一句话说清的那几款要样品（7.4）。每款记下工厂、价格、交期。'],
     ['周日不安排新任务', '补这周没做完的。']
   ],
   15: [
-    ['路线一：只交付已经答应的单', '考试前两周，不接新客户。'],
-    ['项目维护：只回消息', '期末复习为主。'],
-    ['项目维护：只回消息', '期末复习为主。'],
-    ['阶段 0 进度检查', '对照新手册 6.1 阶段 0 的条件：路线一有没有 1 家付费、有没有拿到实习面试或 offer、家人有没有定下注销方式。结果周日告诉家人。'],
-    ['项目维护：只回消息', '期末复习为主。'],
-    ['项目维护：只回消息', '期末复习为主。'],
-    ['项目维护：只回消息', '期末复习为主。']
+    ['注册域名', '期末复习为主，这件 30 分钟内做完。域名短、好拼、和字号接近。'],
+    ['开 Shopify，货币设美元', '商店货币一定用美元，人民币结账时 PayPal 可能不出现（8.1）。'],
+    ['样品到了：称重、试用、拍照', '每款记：重量、味道、毛刺、色差、包装。自己用，手机拍使用过程（7.4）。'],
+    ['写配送、退换货、隐私页', '把事实给 Claude：送哪里、几天到（例如 7～15 个工作日）、多少天能退、谁出运费。让它写英文，你逐句核对能不能做到（8.1）。'],
+    ['用样品实重问物流价', '问云途、燕文、4PX 到美国的价格（第 3 章第 07 步）。算一下：货款 + 运费要低于售价的 40%（7.3）。'],
+    ['留下 1 款', '样品自己用满 3 天，留下你愿意寄给朋友的那 1 款，其余写下淘汰理由存进 03 产品。'],
+    ['周日不安排新任务', '补这周没做完的。']
   ],
   16: [
-    ['项目维护：交付按月客户的单', '期末复习为主。'],
-    ['项目维护：只回消息', '期末复习为主。'],
-    ['项目维护：只回消息', '期末复习为主。'],
-    ['项目维护：只回消息', '期末复习为主。'],
-    ['项目维护：只回消息', '期末复习为主。'],
-    ['项目维护：只回消息', '期末复习为主。'],
-    ['复盘这 6 周，定寒假安排', '列出：收入多少、几家客户、实习结果、家里收尾到哪一步。对照“本周”页的寒假安排，和家人定 1 月每周做什么。']
+    ['详情页', '尺寸、重量、材料、包装里有什么、不适合谁（8.1）。不写治愈、排名第一、24 小时达。'],
+    ['拍素材：痛点、过程、证明', '每种拍 1 条，用自己的样品（9.5）。手部特写，15 秒左右。'],
+    ['首页和联系页', '首页：一个产品、一句话说清解决什么、价格、运费和到货时间、真实图片。联系页：主体法定名称、每天会看的邮箱、地址。'],
+    ['提交收单', 'PayPal 企业账户或连连全球收单，准备执照、身份证、能打开的网站（第 3 章第 06 步）。'],
+    ['开商务管理平台', '用主体邮箱注册 Meta 商务管理平台，主页名称、头像、简介、网站、类别填完（9.2 第 1～2 天）。不买粉丝，不一次建 5 个主页。'],
+    ['发第 1 条真实内容', '开箱视频，英文文案，可以配字幕。不用 AI 图冒充实拍（9.2 第 3～7 天）。'],
+    ['复盘这 5 周，定 1 月安排', '对照“本周”页的第 6～12 周，列出 1 月每周做什么。']
   ]
 };
 
-// 每周固定任务（周一、周三、周五）：家里收尾、新公司、收入表
-const HL_MON = {
-  11: ['家里收尾：开始做“钱没了结”表', '新手册 2.1 的五类：公司欠别人的、别人欠公司的、没做完的业务、还在生效的合同、有没有纠纷。先建空表，今天从华磊的应收应付里填能填的。'],
-  12: ['新公司：列好和爸爸聊的问题', '把新手册 2.9 第 2 步的五个问题抄进手机备忘录：做什么业务、证照和 U 盾谁保管、谁记账报税、会不会借钱或担保、老公司和爸爸个人有没有没还清的债。这周找时间聊，聊完记下答案。剩下的时间做本周业务任务。'],
-  13: ['建收入表', '新手册 7.2：日期、路线、客户、金额、用时、每小时收入。以后每周一填上周的。剩下的时间做本周业务任务。'],
-  14: ['填上周收入表 + 看客户表', '收入表填上周；客户表里每家写下一步做什么。剩下的时间做本周业务任务。'],
-  15: ['填上周收入表', '只填数字，10 分钟。剩下的时间复习。'],
-  16: ['填上周收入表 + 新公司自查', '收入表填上周。在公示系统和中国执行信息公开网（zxgk.court.gov.cn）各查一次新公司，再用个税 App 看有没有不认识的工资申报（2.9 第 4 步）。']
-};
-const HL_WED = ['问一句：家里收尾这周要你帮什么', '问家人：员工、客户、上家、税务这周进展到哪，需要你查什么、做什么表。记下来，排进周五。'];
-const HL_FRI = {
-  10: null,
-  11: ['家里收尾：继续填 2.1 表', '从银行流水、合同文件夹补齐。不确定的项标“待问家人”。'],
-  12: ['家里收尾：2.1 表给家人过一遍', '和家人逐项过，补上你不知道的（押金、口头欠款、货损纠纷）。在企查查和裁判文书网查老公司名下有没有案件。'],
-  13: ['家里收尾：员工补偿表', '新手册 2.4：每位员工一行，入职日期、过去 12 个月平均工资、补偿月数、年假、社保缴到哪个月。AI 算一遍、你手算一遍，一致后给家人。当地上年度平均工资在市人社局网站查。'],
-  14: ['家里收尾：准备问律师和会计的问题', '把 2.1 表和 2.6 的五种情况给 AI（先去掉身份证号、银行卡号），列 15 个问题按重要程度排好，新公司的问题（2.9）也加上，交给家人带去问。'],
-  15: ['家里收尾：只问进展', '考试前，只问一句收尾到哪一步，有急事再做。'],
-  16: ['家里收尾：看还差哪几步', '和家人对照新手册 2.3 的顺序，看注销走简易还是一般、员工处理完没有、还差哪些步骤。']
-};
-const SCFI = ['看本周运价指数 SCFI', '上海航运交易所每周五发布。记下“波斯湾/迪拜”航线的数字，和上周比涨了还是跌了。以后给阿曼客户报 DDP 价、给小货代做报价，都要看运价走势。'];
+// 无人机理论考试 12 月 8 日。题库总数可以在任一刷题块里改（存在本机）
+const DRONE = {start: '2026-11-24', pass1: '2026-12-02', end: '2026-12-07', exam: '2026-12-08', total: 3000};
+const DRONE_TIPS = [
+  '用培训机构给的题库 App；没有的话用“驾考宝典无人机”或“无人机驾驶员考试聚题库”。',
+  '第三方题库 App 的介绍写的是 100 道单选、60 分钟、70 分及格，以你的考试通知为准。',
+  '第一遍用“背题模式”（直接显示答案）：读题 → 看答案 → 记住关键词，一题 10～15 秒。计算题和看不懂的先标记，不卡住。',
+  '每刷完 50 题，切到“练习模式”把这 50 题做一遍，错的会进错题本。',
+  '法规题（空域、执照、飞行规则）记数字；气象和飞行原理题记关键词。',
+  '刷到第几题、模拟考多少分，写进下面“日志”。'
+];
+const DRONE_PHASE2 = '模拟考试：100 题、60 分钟，按真实节奏做，中途不查答案。目标 90 分以上。做完看每道错题的解析，把老错的知识点抄到一页纸上，考前只看这一页。';
 
-// AI 学习：每周一个主题，周一到周五各一个练习
-const AI = {
-  11: ['AI 帮你做收尾和样品', [
-    '让 AI 把新手册 2.2 简易注销和一般注销的区别做成一页纸，给家人看。',
-    '让 AI 根据华磊系统的页面名称，列一张数据导出清单（每项：页面、字段、格式）。',
-    '让 AI 生成路线一的假数据：分区价格表 + 埋了 15 处错的账单（新手册 3.2）。',
-    '让 AI 检查你的“钱没了结”表漏了哪一类（2.1）。先去掉身份证号和银行卡号。',
-    '把这周好用的提示词存进“提示词库”（新手册 7.3）。']],
-  12: ['Claude Code 改工具', [
-    '在 Claude Code 里讲清楚要做什么：报价脚本先识别表头再计算（3.3）。',
-    '让 Claude Code 用 3 份不同格式的假数据测试脚本，学会看测试结果。',
-    '给工具加自检：缺分区、重量段不连续、低于成本就报错，不出结果。',
-    '让 AI 对照一份真实招聘要求改简历重点（不编经历）。',
-    '让 AI 起草《数据保密承诺书》和服务说明，你改成自己的话。']],
-  13: ['AI 帮你找客户', [
-    '让 AI 起草 3 条小红书文案（“小货代一小时做完报价表”），你改写。',
-    '让 AI 扮演小货代老板，模拟一次电话介绍服务，给明天的电话热身。',
-    '让 AI 扮演担心数据泄露的老板，练 3.5 的回答。',
-    '让 AI 把客户表、收入表设计成飞书多维表格或 Excel 的列（7.2）。',
-    '让 AI 根据招聘要求出 10 道外贸实习面试题。']],
-  14: ['AI 帮你交付和面试', [
-    '让 AI 写一份“交付前检查清单”，每次交付照着打勾（3.6）。',
-    '让 AI 当外贸公司经理面试你，最后用英文让你回一封询价邮件，给你打分（4.3）。',
-    '让 AI 起草交付说明模板：用了哪份价格表、哪天的燃油费率、加价规则、待确认项。',
-    '让 AI 按 3.1 的估价方法帮你算：对方自己做要几小时、你收多少合理。',
-    '把这周出过的错写进教训本，让 AI 建议加哪一道检查（7.5）。']],
-  15: ['AI 帮你复习（考试前两周）', [
-    '让 AI 根据课件给每门课做一页复习提纲。',
-    '让 AI 根据复习范围出 10 道题自测。',
-    '让 AI 把报价工具的使用步骤写成一页说明，放假前不用再想。',
-    '让 AI 根据课件给每门课做一页复习提纲。',
-    '让 AI 根据复习范围出 10 道题自测。']],
-  16: ['AI 帮你复习（考试周减量）', [
-    '让 AI 根据课件给每门课做一页复习提纲。',
-    '让 AI 根据复习范围出 10 道题自测。',
-    '把这个月用过的好提示词存成“提示词库”。',
-    '列出寒假要建的阿曼客户表、工厂表的列（新手册 7.2），寒假再做。',
-    '休息，不学新工具。']]
+// 背单词：用 App，不在页面里放词卡
+const WAPP = {
+  app: '不背单词',
+  alt: '百词斩',
+  perDay: 20,
+  why: [
+    '为什么放早上：刚起床还没有消息打扰，背 20 分钟最不容易被打断。新词早上学、睡前再过一遍，中间隔一天的睡眠，第二天记得更牢。',
+    '为什么选不背单词：免费，每个词配真实的美剧、新闻原声例句，听到的是外国人真的怎么用；复习按遗忘规律自动推送。觉得太难就换百词斩，它用图片记词，零基础更轻松，但例句少一些。'
+  ],
+  books: [
+    ['第 1 步：先测词汇量', '打开 App 做一次词汇量测试（几分钟）。'],
+    ['第 2 步：选词书', '测出来 2000 以下：选初中词书；2000～3500：选高中词书。已经认识的词在 App 里标“熟知”，直接跳过，不浪费时间。'],
+    ['第 3 步：高中词背完', '换大学四级核心词。日常沟通和写邮件够用了。'],
+    ['第 4 步：做生意用的词', '换商务英语（BEC 初级）词书，询价、报价、付款、物流、退货这些词都在里面。'],
+    ['做独立站顺手积累', '写产品详情、客服回复时碰到的生词，加进 App 的生词本，和词书一起复习。']
+  ],
+  review: [
+    '复习永远先做完，再学新词。App 会按第 1、2、4、7、15 天推复习，不用自己算。',
+    '当天睡前 10 分钟：把今天的 20 个新词再过一遍，只看英文说中文，说不出的标记。',
+    '第二天早上先清复习，再学新词。',
+    '周日不学新词：清掉所有复习，把生词本和标记过的词过一遍。',
+    '每天挑 3 个新词，写进一句和独立站有关的英文（产品描述或客服回复），用过的词最牢。',
+    '漏了几天不要重置：先只做复习，复习清完再学新词。'
+  ]
 };
 
-// 英语：AI 陪练提示词（开口练习计划第 6 章）和跟读内容
-const ENG = {
-  10: ['A', '第 2 章救命句 + 第 3 章最短版'],
-  11: ['A', '第 2 章救命句 + 第 3 章最短版', 'B'],
-  12: ['B', '加上第 5 章阿曼'],
-  13: ['C', '加上手册第 7 章开场和摸底三问'],
-  14: ['C', '手册第 7 章开场和摸底三问'],
-  15: ['D', '手册 7.4～7.6'],
-  16: ['D', '只复习句子本，考试周只保留 AI 陪练 30 分钟']
+// 化妆练习：每周日一次，每次练一个部位，最后一周整妆计时
+const MAKEUP = {
+  12: ['底妆', '防晒 → 隔离或妆前乳 → 粉底（少量多次，用美妆蛋拍开）→ 遮瑕（黑眼圈、痘印）→ 散粉定妆。左右脸各做一次，对比哪边更自然。'],
+  13: ['眉毛', '先用眉笔描出眉头、眉峰、眉尾三个点，再连起来；眉头淡、眉尾实。眉粉填空隙，眉刷刷顺。练 3 遍，每遍卸掉重画。'],
+  14: ['眼妆', '大地色眼影：浅色铺满眼皮，深色只扫睫毛根部和眼尾。夹睫毛、刷睫毛膏。眼线可选，先练贴着睫毛根部画一条细线。'],
+  15: ['腮红和口红', '微笑时找苹果肌，腮红往斜上方轻扫。口红先描唇线再填满，用纸巾抿一下。最后把前三周的步骤连起来做一遍。'],
+  16: ['完整日常妆，计时', '从底妆到口红一次做完，目标 20 分钟内。拍照对比第一周，记下最慢的一步，以后多练这步。']
 };
-const PROMPTS = {
-  A: '自我介绍和暖场：AI 扮演来广交会的肯尼亚采购商，每次只说 1 句，你先打招呼，聊 5 分钟，最后让它用中文指出错句。',
-  B: '被问"你是谁、为什么来"：AI 扮演马斯喀特五金店的印度籍商人，连续问你叫什么、是学生吗、你家公司做什么、你能做主吗。',
-  C: '摸底三问：AI 扮演 Ruwi 建材批发店的阿曼老板。你按顺序问：从哪里进货、多久进一次每次多少、最头疼什么。',
-  D: '被压价、被怀疑：AI 扮演苏哈尔的巴基斯坦籍家居批发商，依次提出：迪拜更方便、你太年轻、我怎么相信你、价格太贵。'
-};
+const MAKEUP_TIP = '在窗边自然光下练，练前、练后各拍一张照片存起来对比。练完认真卸妆（卸妆油或卸妆水 → 洗面奶），再擦保湿。不知道怎么做，先在小红书或 B 站搜这一步的新手教程看 5 分钟。';
 
 // 阅读：每晚 30 分钟 + 地铁上
 const READ = {
-  10: ['《被讨厌的勇气》（岸见一郎、古贺史健）', '讲怎么不被"别人会怎么看我"卡住，正好对应你说的不敢开口。'],
-  11: ['《被讨厌的勇气》', '本周读完。每读完一章，写一句"这句话对我开口有什么用"。'],
-  12: ['《集装箱改变世界》（马克·莱文森）', '讲集装箱怎么改变国际物流和贸易，读完你会更懂物流和贸易是怎么连起来的。'],
-  13: ['《集装箱改变世界》', '本周读完。挑 3 个点，想想对你做报价对账服务和阿曼代采购有什么用。'],
-  14: ['《影响力》（罗伯特·西奥迪尼）', '讲人为什么会答应别人，对谈客户、谈工厂都直接有用。'],
-  15: ['《影响力》', '每章找一个能用在找客户（小货代老板、阿曼店主）上的例子，记进话术库。'],
-  16: ['考试周：不加新书', '睡前看 15 分钟句子本或《影响力》剩下的部分就行。']
+  12: ['《集装箱改变世界》（马克·莱文森）', '讲集装箱怎么改变国际物流和贸易。以后你从广州发货到美国，会更懂运费为什么这样算。'],
+  13: ['《集装箱改变世界》', '本周读完。挑 3 个点，想想对你做独立站发货有什么用。'],
+  14: ['《影响力》（罗伯特·西奥迪尼）', '讲人为什么会答应别人。写产品页和广告文案时直接用得上。'],
+  15: ['《影响力》', '每章找一个能用在产品页或广告开头的例子，记进备忘录。'],
+  16: ['期末周：不加新书', '睡前看 15 分钟《影响力》剩下的部分就行。']
 };
-
-;
-// 单词：单词|音标|词性|中文|例句|例句中文。按顺序每天 8 个（周日复习）
-const WORDS_RAW = `
-hello|/həˈloʊ/|int.|你好|Hello, nice to meet you.|你好，很高兴认识你。
-name|/neɪm/|n.|名字|My name is Lily.|我叫莉莉。
-student|/ˈstuːdənt/|n.|学生|I am a university student.|我是一名大学生。
-university|/ˌjuːnɪˈvɜːrsəti/|n.|大学|My university is in Guangzhou.|我的大学在广州。
-family|/ˈfæməli/|n.|家庭；家人|This is my family business.|这是我家的生意。
-company|/ˈkʌmpəni/|n.|公司|Our company is 16 years old.|我们公司成立 16 年了。
-year|/jɪr/|n.|年|We started in 2010, sixteen years ago.|我们 2010 年创立，16 年前。
-work|/wɜːrk/|v. / n.|工作|I work with my father.|我和爸爸一起工作。
-meet|/miːt/|v.|见面；认识|Nice to meet you.|很高兴认识你。
-come from|/kʌm frʌm/|phr.|来自|Where do you come from?|你来自哪里？
-country|/ˈkʌntri/|n.|国家|Which country are you from?|你来自哪个国家？
-city|/ˈsɪti/|n.|城市|Muscat is a beautiful city.|马斯喀特是一座美丽的城市。
-first time|/fɜːrst taɪm/|phr.|第一次|This is my first time in Oman.|这是我第一次来阿曼。
-visit|/ˈvɪzɪt/|v. / n.|拜访；参观|I want to visit your shop.|我想去拜访你的店。
-thank|/θæŋk/|v.|感谢|Thank you for your time.|谢谢你抽出时间。
-please|/pliːz/|adv.|请|Slowly, please.|请说慢一点。
-sorry|/ˈsɑːri/|adj.|抱歉的|Sorry, I don't understand.|抱歉，我没听懂。
-again|/əˈɡen/|adv.|再一次|Could you say that again?|你能再说一遍吗？
-understand|/ˌʌndərˈstænd/|v.|理解；听懂|I understand. Thank you.|我明白了，谢谢。
-speak|/spiːk/|v.|说（语言）|I speak a little English.|我会说一点英语。
-English|/ˈɪŋɡlɪʃ/|n.|英语|My English is not very good.|我的英语不太好。
-learn|/lɜːrn/|v.|学习|I am learning English every day.|我每天都在学英语。
-help|/help/|v. / n.|帮助|Can you help me?|你能帮我吗？
-question|/ˈkwestʃən/|n.|问题|Can I ask you a question?|我能问你一个问题吗？
-business|/ˈbɪznəs/|n.|生意；商业|We do logistics business.|我们做物流生意。
-logistics|/ləˈdʒɪstɪks/|n.|物流|Our company is a logistics company.|我们是一家物流公司。
-freight|/freɪt/|n.|货物；运费|We are a freight forwarder.|我们是货运代理公司。
-forwarder|/ˈfɔːrwərdər/|n.|货代；转运商|A forwarder ships goods for you.|货代帮你运货。
-manager|/ˈmænɪdʒər/|n.|经理|I am the Oman market manager.|我是阿曼市场经理。
-market|/ˈmɑːrkɪt/|n.|市场|Oman is a new market for us.|阿曼对我们是新市场。
-father|/ˈfɑːðər/|n.|父亲|My father signs the contracts.|合同由我父亲签。
-mother|/ˈmʌðər/|n.|母亲|My mother manages the money.|我妈妈管钱。
-owner|/ˈoʊnər/|n.|老板；所有者|Are you the owner of this shop?|你是这家店的老板吗？
-boss|/bɔːs/|n.|老板|I will ask my boss.|我会问一下老板。
-decide|/dɪˈsaɪd/|v.|决定|My father decides the big things.|大事由我父亲决定。
-sign|/saɪn/|v.|签字|We sign the contract together.|我们一起签合同。
-contract|/ˈkɑːntrækt/|n.|合同|Please read the contract first.|请先看一下合同。
-experience|/ɪkˈspɪriəns/|n.|经验|We have 16 years of experience.|我们有 16 年的经验。
-service|/ˈsɜːrvɪs/|n.|服务|We offer door-to-door service.|我们提供门到门服务。
-customer|/ˈkʌstəmər/|n.|客户；顾客|We have many customers in China.|我们在中国有很多客户。
-team|/tiːm/|n.|团队|Our team has five people.|我们团队有五个人。
-office|/ˈɔːfɪs/|n.|办公室|Our office is in Guangzhou.|我们的办公室在广州。
-China|/ˈtʃaɪnə/|n.|中国|We ship goods from China.|我们从中国发货。
-Chinese|/ˌtʃaɪˈniːz/|adj. / n.|中国的；中文|These are Chinese products.|这些是中国产品。
-partner|/ˈpɑːrtnər/|n.|合作伙伴|We want to be your partner.|我们想成为你的合作伙伴。
-together|/təˈɡeðər/|adv.|一起|Let's work together.|我们一起合作吧。
-trust|/trʌst/|v. / n.|信任|Trust takes time.|信任需要时间。
-young|/jʌŋ/|adj.|年轻的|I am young, but my company is not.|我年轻，但我的公司不年轻。
-product|/ˈprɑːdʌkt/|n.|产品|What products do you sell?|你卖什么产品？
-goods|/ɡʊdz/|n.|货物；商品|The goods are ready.|货已经准备好了。
-sample|/ˈsæmpl/|n.|样品|I brought some samples.|我带了一些样品。
-catalog|/ˈkætəlɔːɡ/|n.|产品目录|Here is our catalog.|这是我们的产品目录。
-hardware|/ˈhɑːrdwer/|n.|五金|We sell hardware and tools.|我们卖五金和工具。
-tool|/tuːl/|n.|工具|These tools are very strong.|这些工具非常结实。
-building materials|/ˈbɪldɪŋ məˈtɪriəlz/|n.|建材|Building materials sell well in Oman.|建材在阿曼卖得很好。
-tile|/taɪl/|n.|瓷砖|These floor tiles are popular.|这些地砖很受欢迎。
-pipe|/paɪp/|n.|管子|We have plastic and steel pipes.|我们有塑料管和钢管。
-lock|/lɑːk/|n. / v.|锁；锁上|This door lock is very safe.|这个门锁很安全。
-screw|/skruː/|n.|螺丝|One box has 500 screws.|一盒有 500 颗螺丝。
-furniture|/ˈfɜːrnɪtʃər/|n.|家具|Furniture is big and heavy.|家具又大又重。
-household|/ˈhaʊshoʊld/|adj.|家用的|We sell household goods.|我们卖家居用品。
-kitchen|/ˈkɪtʃɪn/|n.|厨房|These are kitchen tools.|这些是厨房用品。
-plastic|/ˈplæstɪk/|n. / adj.|塑料（的）|This box is made of plastic.|这个盒子是塑料做的。
-steel|/stiːl/|n.|钢|Stainless steel does not rust.|不锈钢不会生锈。
-glass|/ɡlæs/|n.|玻璃|Glass is easy to break.|玻璃容易碎。
-quality|/ˈkwɑːləti/|n.|质量|The quality is very good.|质量很好。
-size|/saɪz/|n.|尺寸|What size do you need?|你需要什么尺寸？
-color|/ˈkʌlər/|n.|颜色|We have five colors.|我们有五种颜色。
-weight|/weɪt/|n.|重量|What is the weight of one box?|一箱多重？
-heavy|/ˈhevi/|adj.|重的|This carton is very heavy.|这箱很重。
-light|/laɪt/|adj.|轻的|The product is light and strong.|这个产品又轻又结实。
-model|/ˈmɑːdl/|n.|型号|Which model do you like?|你喜欢哪个型号？
-popular|/ˈpɑːpjələr/|adj.|受欢迎的|This model is very popular.|这个型号很受欢迎。
-new|/nuː/|adj.|新的|This is our new product.|这是我们的新产品。
-battery|/ˈbætəri/|n.|电池|Products with batteries are harder to ship.|带电池的产品更难运。
-electric|/ɪˈlektrɪk/|adj.|电的|We do not ship electric goods now.|我们现在不运带电产品。
-factory|/ˈfæktəri/|n.|工厂|The factory is in Foshan.|工厂在佛山。
-supplier|/səˈplaɪər/|n.|供应商|We work with good suppliers.|我们和好的供应商合作。
-price|/praɪs/|n.|价格|What is the price?|价格是多少？
-quote|/kwoʊt/|n. / v.|报价|I will send you a quote today.|我今天把报价发给你。
-quotation|/kwoʊˈteɪʃn/|n.|报价单|Please check our quotation.|请看一下我们的报价单。
-MOQ|/ˌem oʊ ˈkjuː/|n.|最小起订量|What is your MOQ?|你们的最小起订量是多少？
-minimum|/ˈmɪnɪməm/|adj. / n.|最小的；最低量|The minimum order is 100 pieces.|最低订购 100 件。
-order|/ˈɔːrdər/|n. / v.|订单；订购|We want to place a small order.|我们想下一个小订单。
-quantity|/ˈkwɑːntəti/|n.|数量|What quantity do you need?|你需要多少数量？
-piece|/piːs/|n.|件；个|The price is 2 dollars per piece.|每件 2 美元。
-carton|/ˈkɑːrtn/|n.|纸箱|One carton has 20 pieces.|一箱有 20 件。
-package|/ˈpækɪdʒ/|n. / v.|包装；包裹|The package is strong.|包装很结实。
-packing|/ˈpækɪŋ/|n.|包装方式|What is the packing?|包装是怎样的？
-lead time|/liːd taɪm/|n.|交货期；生产周期|The lead time is 15 days.|交期是 15 天。
-delivery|/dɪˈlɪvəri/|n.|交货；送货|When is the delivery?|什么时候交货？
-stock|/stɑːk/|n.|库存|Do you have it in stock?|这个有现货吗？
-available|/əˈveɪləbl/|adj.|有货的；可用的|Is this color available?|这个颜色有货吗？
-discount|/ˈdɪskaʊnt/|n.|折扣|Can you give me a discount?|能给我打个折吗？
-cheap|/tʃiːp/|adj.|便宜的|Cheap is not always good.|便宜不一定好。
-expensive|/ɪkˈspensɪv/|adj.|贵的|This is too expensive.|这个太贵了。
-negotiate|/nɪˈɡoʊʃieɪt/|v.|谈判；商议|We can negotiate the price.|价格可以商量。
-check|/tʃek/|v.|检查；核对|Please check the goods.|请检查货物。
-inspect|/ɪnˈspekt/|v.|检验；验货|We inspect the goods before shipping.|我们发货前验货。
-inspection|/ɪnˈspekʃn/|n.|检验|Inspection takes one day.|验货需要一天。
-problem|/ˈprɑːbləm/|n.|问题|No problem.|没问题。
-ship|/ʃɪp/|v. / n.|运送；船|We ship goods to Oman every week.|我们每周发货到阿曼。
-shipping|/ˈʃɪpɪŋ/|n.|运输；运费|Shipping takes about 25 days.|运输大约 25 天。
-shipment|/ˈʃɪpmənt/|n.|一批货|Your shipment left today.|你的货今天出发了。
-sea freight|/siː freɪt/|n.|海运|Sea freight is cheaper than air freight.|海运比空运便宜。
-air freight|/er freɪt/|n.|空运|Air freight is fast but expensive.|空运快但贵。
-express|/ɪkˈspres/|n.|快递|Send the samples by express.|样品用快递寄。
-container|/kənˈteɪnər/|n.|集装箱|One 40-foot container holds a lot.|一个 40 尺柜能装很多。
-full container|/fʊl kənˈteɪnər/|n.|整柜（FCL）|A full container is good for big orders.|整柜适合大订单。
-LCL|/ˌel siː ˈel/|n.|拼箱|LCL is good for small orders.|拼箱适合小订单。
-port|/pɔːrt/|n.|港口|The goods arrive at Sohar port.|货物到达苏哈尔港。
-warehouse|/ˈwerhaʊs/|n.|仓库|We have a warehouse in Guangzhou.|我们在广州有仓库。
-pallet|/ˈpælət/|n.|托盘；卡板|We put the cartons on pallets.|我们把纸箱放在托盘上。
-volume|/ˈvɑːljuːm/|n.|体积|The volume is 8 cubic meters.|体积是 8 立方米。
-cubic meter|/ˈkjuːbɪk ˈmiːtər/|n.|立方米|The price is per cubic meter.|价格按立方米算。
-kilogram|/ˈkɪləɡræm/|n.|公斤|The box is 20 kilograms.|这箱 20 公斤。
-gross weight|/ɡroʊs weɪt/|n.|毛重|The gross weight is 25 kg.|毛重 25 公斤。
-dimension|/daɪˈmenʃn/|n.|尺寸（长宽高）|Please send me the carton dimensions.|请发我纸箱的尺寸。
-door to door|/dɔːr tə dɔːr/|phr.|门到门|We deliver door to door.|我们送货上门。
-DDP|/ˌdiː diː ˈpiː/|n.|完税后交货|With DDP, we pay the duty for you.|DDP 由我们替你付关税。
-FOB|/ˌef oʊ ˈbiː/|n.|离岸价|The FOB price is lower.|FOB 价格更低。
-CIF|/ˌsiː aɪ ˈef/|n.|到岸价（含运费保险）|CIF includes freight and insurance.|CIF 包含运费和保险。
-customs|/ˈkʌstəmz/|n.|海关|The goods are at customs now.|货物现在在海关。
-clearance|/ˈklɪrəns/|n.|清关|Customs clearance takes 3 days.|清关需要 3 天。
-clearing agent|/ˈklɪrɪŋ ˈeɪdʒənt/|n.|清关代理|We need a clearing agent in Muscat.|我们需要一个马斯喀特的清关代理。
-duty|/ˈduːti/|n.|关税|The import duty is 5 percent.|进口关税是 5%。
-tax|/tæks/|n.|税|VAT in Oman is 5 percent.|阿曼的增值税是 5%。
-declare|/dɪˈkler/|v.|申报|We declare the real value.|我们按真实货值申报。
-value|/ˈvæljuː/|n.|价值；货值|What is the value of the goods?|这批货值多少？
-invoice|/ˈɪnvɔɪs/|n.|发票|I will send the invoice today.|我今天发发票给你。
-packing list|/ˈpækɪŋ lɪst/|n.|装箱单|Please check the packing list.|请核对装箱单。
-bill of lading|/bɪl əv ˈleɪdɪŋ/|n.|提单|The bill of lading is ready.|提单已经出来了。
-document|/ˈdɑːkjumənt/|n.|文件；单据|We prepare all the documents.|所有单据我们来准备。
-certificate|/sərˈtɪfɪkət/|n.|证书|Do you need a certificate of origin?|你需要原产地证吗？
-license|/ˈlaɪsns/|n.|执照；许可证|Do you have an import license?|你有进口许可证吗？
-arrive|/əˈraɪv/|v.|到达|The goods will arrive next week.|货下周到。
-departure|/dɪˈpɑːrtʃər/|n.|出发；离港|The departure date is May 5.|离港日期是 5 月 5 日。
-track|/træk/|v.|追踪|You can track your goods online.|你可以在网上追踪货物。
-tracking number|/ˈtrækɪŋ ˈnʌmbər/|n.|追踪单号|Here is the tracking number.|这是追踪单号。
-on time|/ɑːn taɪm/|phr.|准时|We always deliver on time.|我们总是准时交货。
-delay|/dɪˈleɪ/|n. / v.|延误|Sorry for the delay.|抱歉延误了。
-damage|/ˈdæmɪdʒ/|n. / v.|损坏|There is no damage to the goods.|货物没有损坏。
-insurance|/ɪnˈʃʊrəns/|n.|保险|Insurance protects your goods.|保险保障你的货物。
-route|/ruːt/|n.|路线|This is the fastest route.|这是最快的路线。
-cost|/kɔːst/|n. / v.|成本；花费|The total cost is lower than Dubai.|总成本比迪拜低。
-total|/ˈtoʊtl/|adj. / n.|总的；总数|The total price includes shipping.|总价包含运费。
-include|/ɪnˈkluːd/|v.|包含|The price includes duty.|价格包含关税。
-compare|/kəmˈper/|v.|比较|Let's compare the total cost.|我们比一下总成本。
-save|/seɪv/|v.|节省|You can save 10 percent.|你可以省 10%。
-pay|/peɪ/|v.|支付|How do you want to pay?|你想怎么付款？
-payment|/ˈpeɪmənt/|n.|付款|We need 30 percent payment first.|我们需要先付 30%。
-deposit|/dɪˈpɑːzɪt/|n.|定金|Please pay a 30 percent deposit.|请付 30% 定金。
-balance|/ˈbæləns/|n.|余款|Pay the balance before shipping.|发货前付余款。
-bank transfer|/bæŋk ˈtrænsfɜːr/|n.|银行转账|We accept bank transfer.|我们接受银行转账。
-account|/əˈkaʊnt/|n.|账户|This is our company bank account.|这是我们公司的银行账户。
-receipt|/rɪˈsiːt/|n.|收据|Please send me the payment receipt.|请把付款回单发给我。
-dollar|/ˈdɑːlər/|n.|美元|The price is in US dollars.|价格以美元计。
-rial|/riˈɑːl/|n.|里亚尔（阿曼货币）|One Omani rial is about 2.6 dollars.|1 阿曼里亚尔约 2.6 美元。
-exchange rate|/ɪksˈtʃeɪndʒ reɪt/|n.|汇率|The exchange rate changes every day.|汇率每天都在变。
-credit|/ˈkredɪt/|n.|信用；赊账|We can give credit after three orders.|合作三单后可以给账期。
-due|/duː/|adj.|到期的|The payment is due on Friday.|付款周五到期。
-remind|/rɪˈmaɪnd/|v.|提醒|Just a friendly reminder about the payment.|友情提醒一下付款的事。
-refund|/ˈriːfʌnd/|n. / v.|退款|We will refund the difference.|差价我们会退。
-profit|/ˈprɑːfɪt/|n.|利润|The profit is small but steady.|利润不大但稳定。
-margin|/ˈmɑːrdʒɪn/|n.|利润率|What margin do you need?|你需要多少利润空间？
-budget|/ˈbʌdʒɪt/|n.|预算|What is your budget?|你的预算是多少？
-risk|/rɪsk/|n.|风险|A small first order lowers the risk.|先下小单风险更低。
-guarantee|/ˌɡærənˈtiː/|n. / v.|保证|We guarantee the quality.|我们保证质量。
-agree|/əˈɡriː/|v.|同意|I agree with you.|我同意你的看法。
-confirm|/kənˈfɜːrm/|v.|确认|Please confirm the order.|请确认订单。
-deal|/diːl/|n.|交易|It's a deal.|成交。
-offer|/ˈɔːfər/|n. / v.|报价；提供|This is our best offer.|这是我们最好的报价了。
-condition|/kənˈdɪʃn/|n.|条件|What are your payment conditions?|你们的付款条件是什么？
-shop|/ʃɑːp/|n.|商店|Your shop is very big.|你的店很大。
-wholesale|/ˈhoʊlseɪl/|n. / adj.|批发|We sell at wholesale prices.|我们按批发价卖。
-retail|/ˈriːteɪl/|n. / adj.|零售|The retail price is higher.|零售价更高。
-wholesaler|/ˈhoʊlseɪlər/|n.|批发商|He is a big wholesaler in Ruwi.|他是 Ruwi 的大批发商。
-buy|/baɪ/|v.|买|Where do you buy your goods now?|你现在从哪里进货？
-sell|/sel/|v.|卖|This sells well in summer.|这个夏天卖得好。
-import|/ɪmˈpɔːrt/|v. / n.|进口|We import from Dubai.|我们从迪拜进口。
-export|/ˈekspɔːrt/|v. / n.|出口|China exports a lot to Oman.|中国大量出口到阿曼。
-Dubai|/duːˈbaɪ/|n.|迪拜|Many shops buy from Dragon Mart in Dubai.|很多店从迪拜龙城进货。
-often|/ˈɔːfn/|adv.|经常|How often do you buy goods?|你多久进一次货？
-every month|/ˈevri mʌnθ/|phr.|每个月|We order every month.|我们每个月订货。
-biggest|/ˈbɪɡɪst/|adj.|最大的|What is your biggest problem?|你最头疼的问题是什么？
-difficult|/ˈdɪfɪkəlt/|adj.|困难的|Shipping from China is difficult for us.|从中国运货对我们来说很难。
-easy|/ˈiːzi/|adj.|容易的|We make it easy for you.|我们让这件事变简单。
-need|/niːd/|v. / n.|需要|What do you need?|你需要什么？
-want|/wɑːnt/|v.|想要|Do you want to try one order?|你想试一单吗？
-try|/traɪ/|v.|尝试|Let's try a small order first.|我们先试一个小单。
-interested|/ˈɪntrəstɪd/|adj.|感兴趣的|Are you interested in our products?|你对我们的产品感兴趣吗？
-think|/θɪŋk/|v.|认为；考虑|Let me think about it.|让我考虑一下。
-sure|/ʃʊr/|adj.|确定的|Sure, no problem.|当然，没问题。
-maybe|/ˈmeɪbi/|adv.|也许|Maybe next month.|也许下个月。
-later|/ˈleɪtər/|adv.|稍后|I will call you later.|我稍后给你打电话。
-send|/send/|v.|发送|Please send me your price list.|请把价格表发给我。
-call|/kɔːl/|v. / n.|打电话|Can I call you tomorrow?|我明天可以给你打电话吗？
-message|/ˈmesɪdʒ/|n.|消息|I will send you a message on WhatsApp.|我会在 WhatsApp 给你发消息。
-number|/ˈnʌmbər/|n.|号码；数字|What is your phone number?|你的电话号码是多少？
-email|/ˈiːmeɪl/|n.|电子邮件|Here is my email address.|这是我的邮箱地址。
-address|/ˈædres/|n.|地址|What is your shop address?|你的店地址是哪里？
-business card|/ˈbɪznəs kɑːrd/|n.|名片|Here is my business card.|这是我的名片。
-appointment|/əˈpɔɪntmənt/|n.|预约|Can I make an appointment?|我可以预约吗？
-free|/friː/|adj.|有空的；免费的|Are you free on Monday?|你周一有空吗？
-busy|/ˈbɪzi/|adj.|忙的|Sorry, are you busy now?|抱歉，你现在忙吗？
-tomorrow|/təˈmɑːroʊ/|adv.|明天|See you tomorrow.|明天见。
-morning|/ˈmɔːrnɪŋ/|n.|上午|I can come in the morning.|我可以上午来。
-afternoon|/ˌæftərˈnuːn/|n.|下午|Is the afternoon OK?|下午可以吗？
-week|/wiːk/|n.|周|I am in Muscat for one week.|我在马斯喀特待一周。
-date|/deɪt/|n.|日期|What date is good for you?|哪天对你合适？
-time|/taɪm/|n.|时间|What time is good for you?|你什么时间方便？
-hotel|/hoʊˈtel/|n.|酒店|My hotel is near Ruwi.|我的酒店在 Ruwi 附近。
-airport|/ˈerpɔːrt/|n.|机场|I will arrive at the airport at 9.|我 9 点到机场。
-taxi|/ˈtæksi/|n.|出租车|I will take a taxi.|我打车过去。
-map|/mæp/|n.|地图|Can you show me on the map?|你能在地图上指给我吗？
-far|/fɑːr/|adj.|远的|Is it far from here?|离这里远吗？
-near|/nɪr/|prep.|在附近|Is there a bank near here?|附近有银行吗？
-left|/left/|n. / adv.|左边|Turn left, please.|请左转。
-right|/raɪt/|n. / adv.|右边；对的|Turn right here.|在这里右转。
-water|/ˈwɔːtər/|n.|水|Can I have some water?|能给我一点水吗？
-coffee|/ˈkɔːfi/|n.|咖啡|Thank you for the coffee.|谢谢你的咖啡。
-tea|/tiː/|n.|茶|Would you like some Chinese tea?|你想尝尝中国茶吗？
-gift|/ɡɪft/|n.|礼物|This is a small gift from China.|这是从中国带来的小礼物。
-welcome|/ˈwelkəm/|adj. / int.|欢迎|You are welcome to visit China.|欢迎你来中国。
-friendly|/ˈfrendli/|adj.|友好的|People in Oman are very friendly.|阿曼人很友好。
-important|/ɪmˈpɔːrtnt/|adj.|重要的|Quality is the most important.|质量最重要。
-same|/seɪm/|adj.|相同的|Is it the same as the sample?|和样品一样吗？
-different|/ˈdɪfrənt/|adj.|不同的|This one is different.|这个不一样。
-better|/ˈbetər/|adj.|更好的|Our price is better than Dubai.|我们的价格比迪拜好。
-fast|/fæst/|adj.|快的|Air freight is fast.|空运很快。
-slow|/sloʊ/|adj.|慢的|Sea freight is slow but cheap.|海运慢但便宜。
-safe|/seɪf/|adj.|安全的|Your money is safe with us.|你的钱在我们这里很安全。
-simple|/ˈsɪmpl/|adj.|简单的|The process is simple.|流程很简单。
-plan|/plæn/|n. / v.|计划|What is your plan for next year?|你明年有什么计划？
-goal|/ɡoʊl/|n.|目标|Our goal is long-term business.|我们的目标是长期合作。
-long-term|/ˌlɔːŋ ˈtɜːrm/|adj.|长期的|We want a long-term partner.|我们想要长期合作伙伴。
-report|/rɪˈpɔːrt/|n.|报告|I will send you a weekly report.|我每周给你发一份报告。
-update|/ʌpˈdeɪt/|n. / v.|更新；最新情况|Here is an update on your order.|这是你订单的最新情况。
-schedule|/ˈskedʒuːl/|n.|时间表|The shipping schedule is on Friday.|船期在周五。
-data|/ˈdeɪtə/|n.|数据|Let's look at the data.|我们看一下数据。
-table|/ˈteɪbl/|n.|表格|I made a table for you.|我给你做了一张表。
-file|/faɪl/|n.|文件|Please open the file.|请打开这个文件。
-photo|/ˈfoʊtoʊ/|n.|照片|Can you send me a photo?|你能发张照片给我吗？
-video|/ˈvɪdioʊ/|n.|视频|Here is a video of the factory.|这是工厂的视频。
-online|/ˌɑːnˈlaɪn/|adv. / adj.|在线|We can talk online.|我们可以在线聊。
-tool kit|/tuːl kɪt/|n.|工具套装|This tool kit has 40 pieces.|这套工具有 40 件。
-AI|/ˌeɪ ˈaɪ/|n.|人工智能|I use AI to translate.|我用 AI 翻译。
-translate|/trænsˈleɪt/|v.|翻译|Can AI translate this for me?|AI 能帮我翻译这个吗？
-improve|/ɪmˈpruːv/|v.|改进；提高|My English is improving.|我的英语在进步。
-practice|/ˈpræktɪs/|n. / v.|练习|I practice speaking every day.|我每天练口语。
-mistake|/mɪˈsteɪk/|n.|错误|Sorry, that was my mistake.|抱歉，是我的错。
-solve|/sɑːlv/|v.|解决|We can solve this problem.|我们能解决这个问题。
-reply|/rɪˈplaɪ/|v. / n.|回复|Thank you for your reply.|谢谢你的回复。
-soon|/suːn/|adv.|很快|I will reply soon.|我会尽快回复。
-hope|/hoʊp/|v.|希望|I hope to see you again.|希望再见到你。
-next time|/nekst taɪm/|phr.|下次|See you next time.|下次见。
-goodbye|/ɡʊdˈbaɪ/|int.|再见|Goodbye, and thank you.|再见，谢谢你。
-inshallah|/ɪnˈʃɑːlə/|int.|如果真主愿意（阿拉伯语）|See you tomorrow, inshallah.|明天见，如果一切顺利的话。
-salaam|/səˈlɑːm/|int.|你好（阿拉伯语）|Salaam alaikum!|愿你平安！（阿拉伯语问候）
-shukran|/ʃʊkˈrɑːn/|int.|谢谢（阿拉伯语）|Shukran, my friend.|谢谢你，朋友。
-`;
-
-;
-// 日常交流单词
-const WORDS_DAILY = `
-hi|/haɪ/|int.|嗨；你好|Hi, I'm Lily from China.|嗨，我是来自中国的莉莉。
-good morning|/ɡʊd ˈmɔːrnɪŋ/|phr.|早上好|Good morning, Mr. Ali. How are you?|早上好，阿里先生。您好吗？
-how are you|/haʊ ɑːr juː/|phr.|你好吗|Hello, Mr. Said, how are you today?|你好，赛义德先生，你今天好吗？
-fine|/faɪn/|adj.|好的；不错的|I'm fine, thank you. And you?|我很好，谢谢。你呢？
-nice to meet you|/naɪs tə miːt juː/|phr.|很高兴认识你|Nice to meet you. Here is my card.|很高兴认识你。这是我的名片。
-yes|/jes/|adv.|是；对|Yes, we can ship to Muscat.|是的，我们可以发货到马斯喀特。
-no|/noʊ/|adv.|不；不是|No, this is my first trip to Oman.|不，这是我第一次来阿曼。
-okay|/oʊˈkeɪ/|adj. / int.|好的；可以|Okay, see you at ten.|好的，十点见。
-excuse me|/ɪkˈskjuːz miː/|phr.|打扰一下；劳驾|Excuse me, where is this shop?|打扰一下，这家店在哪里？
-you're welcome|/jʊr ˈwelkəm/|phr.|不客气|You're welcome. I'm happy to help.|不客气，很乐意帮忙。
-see you|/siː juː/|phr.|再见；回头见|See you tomorrow morning.|明天早上见。
-good evening|/ɡʊd ˈiːvnɪŋ/|phr.|晚上好|Good evening. Thank you for dinner.|晚上好。谢谢你请我吃晚饭。
-good night|/ɡʊd naɪt/|phr.|晚安（告别时）|Good night, see you tomorrow.|晚安，明天见。
-Mr.|/ˈmɪstər/|n.|先生（用于姓名前）|Mr. Khalid has three shops in Muscat.|哈立德先生在马斯喀特有三家店。
-Ms.|/mɪz/|n.|女士（用于姓名前）|Ms. Sara is the shop manager.|萨拉女士是店铺经理。
-sir|/sɜːr/|n.|先生（尊称）|Thank you very much, sir.|非常感谢您，先生。
-friend|/frend/|n.|朋友|He is my father's old friend.|他是我父亲的老朋友。
-we|/wiː/|pron.|我们|We ship to Oman every week.|我们每周都发货到阿曼。
-you|/juː/|pron.|你；您；你们|Can you show me your shop?|你能带我看看你的店吗？
-they|/ðeɪ/|pron.|他们；它们|They buy tiles from China.|他们从中国买瓷砖。
-this|/ðɪs/|pron. / adj.|这；这个|This is our new catalog.|这是我们的新目录。
-that|/ðæt/|pron. / adj.|那；那个|That sounds good to me.|那听起来不错。
-here|/hɪr/|adv.|这里|Please sign here.|请在这里签字。
-there|/ðer/|adv.|那里|The hotel is over there.|酒店在那边。
-what|/wʌt/|pron.|什么|What do you sell in your shop?|你店里卖什么？
-where|/wer/|adv.|哪里|Where do you buy your goods?|你在哪里进货？
-when|/wen/|adv. / conj.|什么时候；当……时|When can we meet?|我们什么时候可以见面？
-who|/huː/|pron.|谁|Who is the owner of this shop?|谁是这家店的老板？
-how|/haʊ/|adv.|怎样；如何|How do you ship your goods now?|你现在怎么运货？
-why|/waɪ/|adv.|为什么|Why is the shipment late?|为什么这批货晚了？
-which|/wɪtʃ/|pron. / adj.|哪一个|Which one do you like?|你喜欢哪一个？
-how much|/haʊ mʌtʃ/|phr.|多少（钱、量）|How much is this?|这个多少钱？
-how many|/haʊ ˈmeni/|phr.|多少（数量）|How many cartons do you need?|你需要多少箱？
-can|/kæn/|v.|能；可以|Can I take a photo?|我可以拍张照片吗？
-could|/kʊd/|v.|可以（更礼貌）|Could you help me, please?|您能帮我一下吗？
-would like|/wʊd laɪk/|phr.|想要（礼貌说法）|I would like a cup of tea.|我想要一杯茶。
-let me see|/let miː siː/|phr.|让我想想；我看看|Let me see. Maybe next Monday.|我想想，也许下周一。
-I see|/aɪ siː/|phr.|我明白了|I see. Thank you for explaining.|我明白了，谢谢你的解释。
-no problem|/noʊ ˈprɑːbləm/|phr.|没问题|No problem, I can send it today.|没问题，我今天就能发。
-of course|/əv ˈkɔːrs/|phr.|当然|Of course, you can call me anytime.|当然，你随时可以给我打电话。
-by the way|/baɪ ðə weɪ/|phr.|顺便说一下|By the way, do you import from China?|顺便问一下，你从中国进货吗？
-how about|/haʊ əˈbaʊt/|phr.|……怎么样|How about meeting at three?|三点见面怎么样？
-I'm afraid|/aɪm əˈfreɪd/|phr.|恐怕；很遗憾|I'm afraid I don't understand.|恐怕我没听懂。
-take care|/teɪk ker/|phr.|保重|Goodbye, take care!|再见，保重！
-have a nice day|/hæv ə naɪs deɪ/|phr.|祝你今天愉快|Thank you, have a nice day!|谢谢，祝你今天愉快！
-could you repeat that|/kʊd juː rɪˈpiːt ðæt/|phr.|你能再说一遍吗|Sorry, could you repeat that?|不好意思，你能再说一遍吗？
-slowly|/ˈsloʊli/|adv.|慢慢地|Could you speak slowly, please?|请你说慢一点好吗？
-pardon|/ˈpɑːrdn/|int.|请再说一遍；对不起|Pardon? I didn't hear you.|什么？我没听清。
-what do you mean|/wʌt duː juː miːn/|phr.|你是什么意思|What do you mean by small order?|你说的小订单是什么意思？
-for example|/fər ɪɡˈzæmpəl/|phr.|例如|We ship many things, for example, tiles.|我们运很多东西，比如瓷砖。
-one|/wʌn/|num.|一|I need one more day.|我还需要一天。
-two|/tuː/|num.|二|We have two warehouses in China.|我们在中国有两个仓库。
-three|/θriː/|num.|三|I will stay in Muscat for three days.|我会在马斯喀特待三天。
-five|/faɪv/|num.|五|Shipping takes about five weeks.|海运大约需要五周。
-ten|/ten/|num.|十|Let's meet at ten o'clock.|我们十点见吧。
-twenty|/ˈtwenti/|num.|二十|The price is twenty rials.|价格是二十里亚尔。
-hundred|/ˈhʌndrəd/|num.|百|We can send one hundred cartons.|我们可以发一百箱。
-thousand|/ˈθaʊzənd/|num.|千|It costs about two thousand dollars.|大约要两千美元。
-half|/hæf/|n. / adj.|一半；半|Please pay half now.|请现在先付一半。
-o'clock|/əˈklɑːk/|adv.|……点钟|The meeting is at nine o'clock.|会议在九点。
-hour|/ˈaʊər/|n.|小时|The flight is about eight hours.|航班大约八个小时。
-minute|/ˈmɪnɪt/|n.|分钟|Please wait a minute.|请稍等一下。
-today|/təˈdeɪ/|adv. / n.|今天|Are you open today?|你们今天营业吗？
-yesterday|/ˈjestərdeɪ/|adv. / n.|昨天|I arrived in Muscat yesterday.|我昨天到的马斯喀特。
-tonight|/təˈnaɪt/|adv. / n.|今晚|Are you free tonight?|你今晚有空吗？
-evening|/ˈiːvnɪŋ/|n.|傍晚；晚上|Shops open again in the evening.|商店晚上会重新开门。
-night|/naɪt/|n.|夜晚|I will call you at night.|我晚上给你打电话。
-now|/naʊ/|adv.|现在|I am in Muscat now.|我现在在马斯喀特。
-day|/deɪ/|n.|天；日|I will stay here for five days.|我会在这里待五天。
-month|/mʌnθ/|n.|月|We ship goods every month.|我们每个月都发货。
-Monday|/ˈmʌndeɪ/|n.|星期一|Can we meet on Monday?|我们星期一能见面吗？
-Friday|/ˈfraɪdeɪ/|n.|星期五|Many shops close on Friday.|很多商店星期五关门。
-weekend|/ˈwiːkend/|n.|周末|In Oman, the weekend is Friday and Saturday.|在阿曼，周末是周五和周六。
-early|/ˈɜːrli/|adj. / adv.|早的；早地|Sorry, I am a little early.|不好意思，我来早了一点。
-late|/leɪt/|adj. / adv.|晚的；迟到的|Sorry I'm late. The traffic was bad.|抱歉我迟到了，路上堵车。
-before|/bɪˈfɔːr/|prep. / conj.|在……之前|Please call me before you come.|你来之前请给我打电话。
-after|/ˈæftər/|prep. / conj.|在……之后|Let's talk after lunch.|我们午饭后再谈吧。
-ago|/əˈɡoʊ/|adv.|以前|I came here two days ago.|我两天前来到这里。
-next|/nekst/|adj.|下一个的|See you next week.|下周见。
-last|/læst/|adj.|上一个的；最后的|I visited Dubai last year.|我去年去过迪拜。
-every day|/ˈevri deɪ/|phr.|每天|I practice English every day.|我每天练习英语。
-always|/ˈɔːlweɪz/|adv.|总是|We always pack goods carefully.|我们总是小心包装货物。
-usually|/ˈjuːʒuəli/|adv.|通常|I usually reply within one hour.|我通常一小时内回复。
-sometimes|/ˈsʌmtaɪmz/|adv.|有时|Sometimes the port is very busy.|有时候港口很忙。
-never|/ˈnevər/|adv.|从不|I have never been to Oman.|我从来没去过阿曼。
-already|/ɔːlˈredi/|adv.|已经|I already sent the photos.|我已经把照片发过去了。
-yet|/jet/|adv.|还；尚（用于否定/疑问）|Have you received the goods yet?|你收到货了吗？
-still|/stɪl/|adv.|仍然；还|Is the shop still open?|店还开着吗？
-just|/dʒʌst/|adv.|刚刚；只是|I just arrived at the hotel.|我刚到酒店。
-right now|/raɪt naʊ/|phr.|马上；此刻|I am busy right now.|我现在正忙。
-weather|/ˈweðər/|n.|天气|The weather is very hot today.|今天天气很热。
-hot|/hɑːt/|adj.|热的；辣的|Muscat is very hot in summer.|马斯喀特夏天很热。
-cold|/koʊld/|adj.|冷的|The air conditioner is too cold.|空调太冷了。
-warm|/wɔːrm/|adj.|温暖的|Oman is warm in winter.|阿曼冬天很暖和。
-sunny|/ˈsʌni/|adj.|晴朗的|It's sunny every day here.|这里每天都是晴天。
-rain|/reɪn/|n. / v.|雨；下雨|It doesn't rain much in Oman.|阿曼不怎么下雨。
-summer|/ˈsʌmər/|n.|夏天|Summer here is very hot.|这里的夏天非常热。
-winter|/ˈwɪntər/|n.|冬天|Winter is the best time to visit.|冬天是来访的最佳时间。
-degree|/dɪˈɡriː/|n.|度（温度）|It's thirty-five degrees today.|今天三十五度。
-humid|/ˈhjuːmɪd/|adj.|潮湿的|It's hot and humid near the sea.|海边又热又潮湿。
-eat|/iːt/|v.|吃|What do people eat here for breakfast?|这里的人早餐吃什么？
-drink|/drɪŋk/|v. / n.|喝；饮料|Would you like something to drink?|您想喝点什么吗？
-food|/fuːd/|n.|食物|I love Omani food.|我很喜欢阿曼菜。
-breakfast|/ˈbrekfəst/|n.|早餐|Breakfast is at seven in the hotel.|酒店早餐七点开始。
-lunch|/lʌntʃ/|n.|午餐|Let's have lunch together.|我们一起吃午饭吧。
-dinner|/ˈdɪnər/|n.|晚餐|Thank you for inviting me to dinner.|谢谢你邀请我吃晚饭。
-restaurant|/ˈrestərɑːnt/|n.|餐厅|Is there a Chinese restaurant nearby?|附近有中餐馆吗？
-menu|/ˈmenjuː/|n.|菜单|Can I see the menu, please?|请给我看一下菜单好吗？
-rice|/raɪs/|n.|米饭|Chicken with rice, please.|请给我鸡肉饭。
-chicken|/ˈtʃɪkɪn/|n.|鸡肉|I'll have the grilled chicken.|我要烤鸡。
-fish|/fɪʃ/|n.|鱼|The fish here is very fresh.|这里的鱼很新鲜。
-meat|/miːt/|n.|肉|I don't eat much meat.|我不怎么吃肉。
-bread|/bred/|n.|面包|The bread is still warm.|面包还是热的。
-dates|/deɪts/|n.|椰枣|Omani dates are very sweet.|阿曼椰枣很甜。
-juice|/dʒuːs/|n.|果汁|A glass of orange juice, please.|请来一杯橙汁。
-milk|/mɪlk/|n.|牛奶|Tea with milk, please.|请给我奶茶。
-sugar|/ˈʃʊɡər/|n.|糖|No sugar, thank you.|不要糖，谢谢。
-delicious|/dɪˈlɪʃəs/|adj.|好吃的；美味的|This food is delicious!|这菜真好吃！
-spicy|/ˈspaɪsi/|adj.|辣的|Is this dish spicy?|这道菜辣吗？
-sweet|/swiːt/|adj.|甜的|This dessert is too sweet for me.|这个甜点对我来说太甜了。
-hungry|/ˈhʌŋɡri/|adj.|饿的|Are you hungry? Let's eat.|你饿了吗？我们去吃饭吧。
-full|/fʊl/|adj.|饱的；满的|I'm full, thank you.|我吃饱了，谢谢。
-bill|/bɪl/|n.|账单|Can I have the bill, please?|请给我账单好吗？
-vegetable|/ˈvedʒtəbəl/|n.|蔬菜|I'd like some vegetables, please.|我想要一些蔬菜。
-fruit|/fruːt/|n.|水果|The fruit here is very fresh.|这里的水果很新鲜。
-cup|/kʌp/|n.|杯子；一杯|Would you like a cup of coffee?|你想来杯咖啡吗？
-bottle|/ˈbɑːtl/|n.|瓶子；一瓶|A bottle of water, please.|请给我一瓶水。
-to go|/tə ɡoʊ/|phr.|外带；打包|One coffee to go, please.|一杯咖啡，外带。
-how much is it|/haʊ mʌtʃ ɪz ɪt/|phr.|多少钱|Excuse me, how much is it?|请问多少钱？
-money|/ˈmʌni/|n.|钱|I need to change some money.|我需要换点钱。
-cash|/kæʃ/|n.|现金|Can I pay in cash?|我可以付现金吗？
-card|/kɑːrd/|n.|卡；银行卡|Do you take card?|可以刷卡吗？
-change|/tʃeɪndʒ/|n. / v.|零钱；改变|Here is your change.|这是找您的零钱。
-open|/ˈoʊpən/|adj. / v.|开门的；打开|What time do you open?|你们几点开门？
-close|/kloʊz/|v.|关门；关闭|What time does the shop close?|这家店几点关门？
-look for|/lʊk fɔːr/|phr.|寻找|I'm looking for a hardware shop.|我在找一家五金店。
-just looking|/dʒʌst ˈlʊkɪŋ/|phr.|只是看看|Thanks, I'm just looking.|谢谢，我只是看看。
-bag|/bæɡ/|n.|袋子；包|Do you need a bag?|您需要袋子吗？
-clothes|/kloʊz/|n.|衣服|Where can I buy clothes?|我在哪里能买衣服？
-souvenir|/ˌsuːvəˈnɪr/|n.|纪念品|I want to buy souvenirs for my family.|我想给家人买纪念品。
-mall|/mɔːl/|n.|商场|Let's meet at the mall.|我们在商场见吧。
-souq|/suːk/|n.|（阿拉伯）集市|The Muttrah Souq is very famous.|马特拉集市非常有名。
-supermarket|/ˈsuːpərmɑːrkɪt/|n.|超市|Is there a supermarket near the hotel?|酒店附近有超市吗？
-try on|/traɪ ɑːn/|phr.|试穿|Can I try this on?|我可以试穿这个吗？
-too|/tuː/|adv.|太；也|It's too expensive for me.|这对我来说太贵了。
-a little|/ə ˈlɪtl/|phr.|一点|Can you make it a little cheaper?|能便宜一点吗？
-a lot|/ə lɑːt/|phr.|很多|Thank you a lot.|非常感谢。
-more|/mɔːr/|adj. / adv.|更多|Do you have more colors?|你们还有别的颜色吗？
-less|/les/|adj. / adv.|更少|Can you make it less?|能少一点吗？
-enough|/ɪˈnʌf/|adj. / adv.|足够的|Is this enough?|这些够吗？
-flight|/flaɪt/|n.|航班|My flight leaves at nine tonight.|我的航班今晚九点起飞。
-passport|/ˈpæspɔːrt/|n.|护照|Here is my passport.|这是我的护照。
-visa|/ˈviːzə/|n.|签证|Do I need a visa for Oman?|去阿曼需要签证吗？
-ticket|/ˈtɪkɪt/|n.|票|I already booked my ticket.|我已经订好票了。
-luggage|/ˈlʌɡɪdʒ/|n.|行李|Where can I get my luggage?|我在哪里取行李？
-suitcase|/ˈsuːtkeɪs/|n.|行李箱|My suitcase is very heavy.|我的行李箱很重。
-gate|/ɡeɪt/|n.|登机口；大门|Which gate is my flight?|我的航班在哪个登机口？
-boarding pass|/ˈbɔːrdɪŋ pæs/|n.|登机牌|Please show your boarding pass.|请出示您的登机牌。
-check in|/tʃek ɪn/|phr.|办理入住；办理登机|I'd like to check in, please.|我想办理入住。
-check out|/tʃek aʊt/|phr.|退房|What time is check out?|几点退房？
-book|/bʊk/|v.|预订|I booked a room for three nights.|我订了一个房间，住三晚。
-reservation|/ˌrezərˈveɪʃən/|n.|预订|I have a reservation under Lily Chen.|我用陈莉莉的名字预订了。
-room|/ruːm/|n.|房间|My room number is 506.|我的房间号是506。
-key|/kiː/|n.|钥匙；房卡|I lost my room key.|我把房卡弄丢了。
-Wi-Fi|/ˈwaɪ faɪ/|n.|无线网络|What is the Wi-Fi password?|无线网密码是多少？
-password|/ˈpæswɜːrd/|n.|密码|Can you tell me the password?|你能告诉我密码吗？
-reception|/rɪˈsepʃən/|n.|前台|Please leave it at reception.|请把它放在前台。
-lobby|/ˈlɑːbi/|n.|大堂|I'll wait for you in the lobby.|我在大堂等你。
-floor|/flɔːr/|n.|楼层；地板|My room is on the fifth floor.|我的房间在五楼。
-elevator|/ˈelɪveɪtər/|n.|电梯|Where is the elevator?|电梯在哪里？
-bathroom|/ˈbæθruːm/|n.|洗手间；浴室|Excuse me, where is the bathroom?|请问洗手间在哪里？
-air conditioner|/ˈer kənˌdɪʃənər/|n.|空调|The air conditioner doesn't work.|空调坏了。
-car|/kɑːr/|n.|汽车|I will rent a car.|我会租一辆车。
-bus|/bʌs/|n.|公共汽车|Does this bus go to the city center?|这辆公交去市中心吗？
-driver|/ˈdraɪvər/|n.|司机|The driver is waiting outside.|司机在外面等。
-station|/ˈsteɪʃən/|n.|车站|Where is the bus station?|公交车站在哪里？
-go|/ɡoʊ/|v.|去|I want to go to Muttrah.|我想去马特拉。
-take|/teɪk/|v.|乘坐；拿；花费（时间）|How long does it take?|要多长时间？
-get to|/ɡet tuː/|phr.|到达|How do I get to your shop?|我怎么去你的店？
-get off|/ɡet ɔːf/|phr.|下车|Please let me get off here.|请让我在这里下车。
-stop|/stɑːp/|v. / n.|停；车站|Please stop here.|请在这里停。
-straight|/streɪt/|adv.|直地；一直|Go straight for two minutes.|一直走两分钟。
-turn|/tɜːrn/|v.|转弯|Turn left at the next street.|在下一条街左转。
-street|/striːt/|n.|街道|The shop is on this street.|那家店就在这条街上。
-road|/roʊd/|n.|路；公路|This road goes to the port.|这条路通向港口。
-corner|/ˈkɔːrnər/|n.|拐角|The bank is on the corner.|银行就在拐角处。
-next to|/nekst tuː/|prep.|在……旁边|The shop is next to the mosque.|店在清真寺旁边。
-opposite|/ˈɑːpəzɪt/|prep.|在……对面|My hotel is opposite the mall.|我的酒店在商场对面。
-behind|/bɪˈhaɪnd/|prep.|在……后面|The parking is behind the building.|停车场在大楼后面。
-in front of|/ɪn frʌnt əv/|prep.|在……前面|I'm in front of the hotel.|我在酒店门口。
-between|/bɪˈtwiːn/|prep.|在……之间|The shop is between the bank and the cafe.|店在银行和咖啡馆之间。
-location|/loʊˈkeɪʃən/|n.|位置|Please send me your location.|请把你的位置发给我。
-lost|/lɔːst/|adj.|迷路的；丢失的|Sorry, I'm lost. Can you help me?|不好意思，我迷路了，能帮帮我吗？
-way|/weɪ/|n.|路；方式|Is this the right way?|这条路对吗？
-mosque|/mɑːsk/|n.|清真寺|The Grand Mosque is beautiful.|大清真寺很漂亮。
-beach|/biːtʃ/|n.|海滩|Let's walk on the beach.|我们去海滩散步吧。
-trip|/trɪp/|n.|旅行；出差|This is a business trip.|这是一次出差。
-travel|/ˈtrævəl/|v. / n.|旅行|I travel a lot for work.|我经常因工作出差。
-stay|/steɪ/|v.|停留；住|I'm staying at a hotel near the airport.|我住在机场附近的一家酒店。
-leave|/liːv/|v.|离开；出发|I leave Oman on Sunday.|我周日离开阿曼。
-phone|/foʊn/|n.|电话；手机|What is your phone number?|你的电话号码是多少？
-WhatsApp|/ˈwɑːtsæp/|n.|WhatsApp（通讯软件）|Can I add you on WhatsApp?|我可以加你的WhatsApp吗？
-text|/tekst/|v. / n.|发短信；短信|I'll text you the address.|我把地址发短信给你。
-voice message|/vɔɪs ˈmesɪdʒ/|n.|语音消息|I sent you a voice message.|我给你发了一条语音。
-hold on|/hoʊld ɑːn/|phr.|稍等（电话中）|Hold on, please. Let me check.|请稍等，我查一下。
-call back|/kɔːl bæk/|phr.|回电话|Can I call you back later?|我晚点给你回电话可以吗？
-hear|/hɪr/|v.|听见|Sorry, I can't hear you.|抱歉，我听不见你说话。
-signal|/ˈsɪɡnəl/|n.|信号|The signal is bad here.|这里信号不好。
-charge|/tʃɑːrdʒ/|v.|充电|I need to charge my phone.|我需要给手机充电。
-SIM card|/ˈsɪm kɑːrd/|n.|手机卡|Where can I buy a SIM card?|在哪里能买手机卡？
-contact|/ˈkɑːntækt/|v. / n.|联系；联系人|Please contact me anytime.|请随时联系我。
-add|/æd/|v.|添加|Please add me on WeChat.|请加我微信。
-feel|/fiːl/|v.|感觉|I feel a bit tired today.|我今天有点累。
-happy|/ˈhæpi/|adj.|高兴的|I'm happy to work with you.|很高兴和你合作。
-glad|/ɡlæd/|adj.|高兴的|I'm glad you like it.|很高兴你喜欢。
-tired|/ˈtaɪərd/|adj.|累的|I'm a little tired after the flight.|坐完飞机我有点累。
-worried|/ˈwɜːrid/|adj.|担心的|Don't be worried. We will fix it.|别担心，我们会解决的。
-nervous|/ˈnɜːrvəs/|adj.|紧张的|I'm a little nervous about my English.|我对自己的英语有点紧张。
-excited|/ɪkˈsaɪtɪd/|adj.|兴奋的|I'm excited to visit Oman.|我很期待来阿曼。
-like|/laɪk/|v.|喜欢|I like Omani coffee.|我喜欢阿曼咖啡。
-love|/lʌv/|v.|热爱；很喜欢|I love the beach here.|我很喜欢这里的海滩。
-good|/ɡʊd/|adj.|好的|That's a good idea.|那是个好主意。
-bad|/bæd/|adj.|坏的；不好的|The traffic is bad today.|今天交通很差。
-great|/ɡreɪt/|adj.|很棒的|Great! See you tomorrow.|太好了！明天见。
-I think so|/aɪ θɪŋk soʊ/|phr.|我认为是的|Is it ready? Yes, I think so.|准备好了吗？我想是的。
-I don't think so|/aɪ doʊnt θɪŋk soʊ/|phr.|我不这么认为|I don't think so. It's too late.|我觉得不行，太晚了。
-in my opinion|/ɪn maɪ əˈpɪnjən/|phr.|在我看来|In my opinion, sea freight is better.|在我看来，海运更好。
-really|/ˈriːəli/|adv.|真的；确实|Really? That's great news.|真的吗？好消息。
-very|/ˈveri/|adv.|非常|Thank you very much.|非常感谢。
-I agree|/aɪ əˈɡriː/|phr.|我同意|I agree with you.|我同意你的看法。
-sick|/sɪk/|adj.|生病的|I feel sick today.|我今天不舒服。
-doctor|/ˈdɑːktər/|n.|医生|I need to see a doctor.|我需要看医生。
-hospital|/ˈhɑːspɪtl/|n.|医院|Where is the nearest hospital?|最近的医院在哪里？
-pharmacy|/ˈfɑːrməsi/|n.|药店|Is there a pharmacy near here?|这附近有药店吗？
-medicine|/ˈmedɪsən/|n.|药|I need some medicine for a cold.|我需要一些感冒药。
-headache|/ˈhedeɪk/|n.|头痛|I have a headache.|我头痛。
-fever|/ˈfiːvər/|n.|发烧|I think I have a fever.|我觉得我发烧了。
-stomachache|/ˈstʌməkeɪk/|n.|胃痛；肚子痛|I have a stomachache.|我肚子疼。
-hurt|/hɜːrt/|v.|疼；受伤|My leg hurts.|我腿疼。
-rest|/rest/|n. / v.|休息|You should get some rest.|你应该休息一下。
-emergency|/ɪˈmɜːrdʒənsi/|n.|紧急情况|This is an emergency. Please help!|这是紧急情况，请帮忙！
-husband|/ˈhʌzbənd/|n.|丈夫|Her husband runs the shop.|她丈夫经营这家店。
-wife|/waɪf/|n.|妻子|His wife also works in the shop.|他妻子也在店里工作。
-brother|/ˈbrʌðər/|n.|兄弟|My brother also works in our company.|我哥哥也在我们公司工作。
-sister|/ˈsɪstər/|n.|姐妹|I have one younger sister.|我有一个妹妹。
-children|/ˈtʃɪldrən/|n.|孩子们|How many children do you have?|你有几个孩子？
-parents|/ˈperənts/|n.|父母|My parents started the company.|我父母创办了这家公司。
-hobby|/ˈhɑːbi/|n.|爱好|My hobby is cooking.|我的爱好是做饭。
-music|/ˈmjuːzɪk/|n.|音乐|I like listening to music.|我喜欢听音乐。
-movie|/ˈmuːvi/|n.|电影|Do you like Chinese movies?|你喜欢中国电影吗？
-sport|/spɔːrt/|n.|运动|What sport do you like?|你喜欢什么运动？
-football|/ˈfʊtbɔːl/|n.|足球|People in Oman love football.|阿曼人很喜欢足球。
-colleague|/ˈkɑːliːɡ/|n.|同事|This is my colleague, Anna.|这是我的同事安娜。
-have|/hæv/|v.|有；吃；喝|Do you have time today?|你今天有时间吗？
-know|/noʊ/|v.|知道；认识|Do you know this shop?|你知道这家店吗？
-tell|/tel/|v.|告诉|Please tell me the price.|请告诉我价格。
-ask|/æsk/|v.|问；请求|Can I ask you a question?|我可以问你一个问题吗？
-say|/seɪ/|v.|说|How do you say this in English?|这个用英语怎么说？
-give|/ɡɪv/|v.|给|Please give me your card.|请给我你的名片。
-get|/ɡet/|v.|得到；收到|Did you get my message?|你收到我的消息了吗？
-make|/meɪk/|v.|做；制造|This factory makes locks.|这家工厂生产锁。
-show|/ʃoʊ/|v.|展示；给……看|Let me show you some photos.|让我给你看一些照片。
-find|/faɪnd/|v.|找到|I can't find the address.|我找不到这个地址。
-wait|/weɪt/|v.|等待|Please wait for me at the gate.|请在门口等我。
-look|/lʊk/|v.|看|Please look at this sample.|请看看这个样品。
-use|/juːz/|v.|使用|Do you use WeChat?|你用微信吗？
-bring|/brɪŋ/|v.|带来|I brought some samples for you.|我给你带了一些样品。
-write|/raɪt/|v.|写|Can you write it down for me?|你能帮我写下来吗？
-read|/riːd/|v.|读|I can read English better than speak.|我英语读比说好。
-let's|/lets/|phr.|让我们……吧|Let's have some tea first.|我们先喝点茶吧。
-start|/stɑːrt/|v.|开始|When do you start work?|你几点开始上班？
-finish|/ˈfɪnɪʃ/|v.|完成；结束|I will finish the quote tonight.|我今晚会做完报价。
-forget|/fərˈɡet/|v.|忘记|Don't forget our meeting.|别忘了我们的会面。
-remember|/rɪˈmembər/|v.|记得|I remember your shop.|我记得你的店。
-mean|/miːn/|v.|意思是|What does this word mean?|这个词是什么意思？
-worry|/ˈwɜːri/|v.|担心|Don't worry, it's no problem.|别担心，没问题。
-big|/bɪɡ/|adj.|大的|Your shop is very big.|你的店很大。
-small|/smɔːl/|adj.|小的|This is a small order.|这是一个小订单。
-beautiful|/ˈbjuːtɪfəl/|adj.|美丽的|Muscat is a beautiful city.|马斯喀特是座美丽的城市。
-clean|/kliːn/|adj.|干净的|The city is very clean.|这座城市很干净。
-polite|/pəˈlaɪt/|adj.|有礼貌的|People in Oman are very polite.|阿曼人很有礼貌。
-kind|/kaɪnd/|adj.|友善的|You are very kind. Thank you.|你真好，谢谢。
-also|/ˈɔːlsoʊ/|adv.|也|We also ship by air.|我们也做空运。
-only|/ˈoʊnli/|adv.|只；仅仅|I only speak a little English.|我只会说一点英语。
-here you are|/hɪr juː ɑːr/|phr.|给你|Here you are, my business card.|给你，这是我的名片。
-and|/ænd/|conj.|和；并且|Tea and dates, please.|请来茶和椰枣。
-but|/bʌt/|conj.|但是|It's good, but a little expensive.|很好，但是有点贵。
-or|/ɔːr/|conj.|或者|Sea freight or air freight?|海运还是空运？
-because|/bɪˈkɔːz/|conj.|因为|I'm late because of traffic.|我迟到是因为堵车。
-so|/soʊ/|conj.|所以|It's hot, so let's go inside.|天太热了，我们进去吧。
-if|/ɪf/|conj.|如果|If you have questions, call me.|如果有问题，给我打电话。
-then|/ðen/|adv.|然后；那么|First lunch, then we visit the shop.|先吃午饭，然后去店里。
-to|/tuː/|prep.|到；向|I go to the port every Monday.|我每周一去港口。
-with|/wɪð/|prep.|和……一起；带有|I came with my colleague.|我和同事一起来的。
-for|/fɔːr/|prep.|为了；给|This gift is for you.|这份礼物是给你的。
-about|/əˈbaʊt/|prep. / adv.|关于；大约|Let's talk about shipping.|我们谈谈运输吧。
-from|/frʌm/|prep.|从；来自|I'm from Guangzhou, China.|我来自中国广州。
-in|/ɪn/|prep.|在……里|My hotel is in Ruwi.|我的酒店在鲁维区。
-at|/æt/|prep.|在（地点或时间点）|See you at the hotel at six.|六点酒店见。
-on|/ɑːn/|prep.|在……上；在（某天）|The meeting is on Tuesday.|会议在星期二。
-`;
-
-;
-// 商务英语单词
-const WORDS_BIZ = `
-client|/ˈklaɪənt/|n.|客户|This client has three hardware shops in Muscat.|这位客户在马斯喀特有三家五金店。
-meeting|/ˈmiːtɪŋ/|n.|会议；会面|Can we have a meeting on Sunday?|我们周日可以开个会吗？
-colleague|/ˈkɑːliːɡ/|n.|同事|My colleague will send you the price.|我同事会把价格发给你。
-staff|/stæf/|n.|员工（总称）|Our staff speak English and Chinese.|我们的员工会说英语和中文。
-employee|/ɪmˈplɔɪiː/|n.|雇员；职员|We have twenty employees in Shenzhen.|我们在深圳有二十名员工。
-sales|/seɪlz/|n.|销售；销售额|Our sales are good this month.|我们这个月的销售不错。
-salesperson|/ˈseɪlzˌpɜːrsən/|n.|销售员|I am the salesperson for Oman.|我是负责阿曼的销售员。
-sales manager|/seɪlz ˈmænɪdʒər/|n.|销售经理|Please talk to our sales manager.|请和我们的销售经理谈。
-general manager|/ˈdʒenərəl ˈmænɪdʒər/|n.|总经理|My father is the general manager.|我父亲是总经理。
-director|/dəˈrektər/|n.|总监；董事|The director will join the call.|总监会加入这次通话。
-CEO|/ˌsiː iː ˈoʊ/|n.|首席执行官|The CEO wants to visit your shop.|首席执行官想参观你的店。
-assistant|/əˈsɪstənt/|n.|助理|I am his assistant.|我是他的助理。
-department|/dɪˈpɑːrtmənt/|n.|部门|Our finance department will check it.|我们的财务部门会核对。
-position|/pəˈzɪʃən/|n.|职位|What is your position in the company?|你在公司担任什么职位？
-in charge of|/ɪn tʃɑːrdʒ əv/|phr.|负责|I am in charge of Middle East clients.|我负责中东客户。
-responsible|/rɪˈspɑːnsəbəl/|adj.|负责的|Who is responsible for buying?|谁负责采购？
-contact|/ˈkɑːntækt/|v. / n.|联系；联系人|Please contact me on WhatsApp.|请在WhatsApp上联系我。
-WhatsApp|/ˈwɑːtsæp/|n.|WhatsApp（聊天软件）|Can I have your WhatsApp?|可以给我你的WhatsApp吗？
-follow up|/ˈfɑːloʊ ʌp/|phr.|跟进|I will follow up on your order.|我会跟进你的订单。
-get back to you|/ɡet bæk tə juː/|phr.|回复你|I will get back to you today.|我今天会回复你。
-as discussed|/æz dɪˈskʌst/|phr.|如之前所谈|As discussed, here is our new price.|如之前所谈，这是我们的新价格。
-in advance|/ɪn ədˈvæns/|phr.|提前；预先|Thank you in advance.|先谢谢你了。
-ASAP|/ˌeɪ es eɪ ˈpiː/|abbr.|尽快|Please reply ASAP.|请尽快回复。
-let me know|/let miː noʊ/|phr.|告诉我|Let me know if you have questions.|有问题请告诉我。
-no problem|/noʊ ˈprɑːbləm/|phr.|没问题|No problem, I can do that.|没问题，我可以做到。
-of course|/əv kɔːrs/|phr.|当然|Of course, you are welcome.|当然，不客气。
-make sure|/meɪk ʃʊr/|phr.|确保|I will make sure it is correct.|我会确保它是正确的。
-noted|/ˈnoʊtɪd/|adj.|收到，已知悉|Noted, thank you.|收到，谢谢。
-well received|/wel rɪˈsiːvd/|phr.|已收到|Your payment is well received.|您的付款已收到。
-kindly|/ˈkaɪndli/|adv.|请（礼貌用语）|Kindly check the attached file.|请查看附件。
-attached|/əˈtætʃt/|adj.|附上的|Attached is our price list.|附上我们的价格表。
-attachment|/əˈtætʃmənt/|n.|附件|Please open the attachment.|请打开附件。
-Dear|/dɪr/|adj.|亲爱的（信件称呼）|Dear Mr. Ahmed,|尊敬的艾哈迈德先生：
-regards|/rɪˈɡɑːrdz/|n.|问候（邮件结尾）|Best regards, Lily.|此致，莉莉。
-sincerely|/sɪnˈsɪrli/|adv.|真诚地（信件结尾）|Yours sincerely, Lily Wang.|此致敬礼，王莉莉。
-subject|/ˈsʌbdʒɪkt/|n.|（邮件）主题|Please write the order number in the subject.|请在主题里写上订单号。
-for your reference|/fər jʊr ˈrefərəns/|phr.|供您参考|Here is a photo for your reference.|这是一张照片供您参考。
-FYI|/ˌef waɪ ˈaɪ/|abbr.|供参考|FYI, the factory is closed tomorrow.|供参考，工厂明天放假。
-look forward to|/lʊk ˈfɔːrwərd tuː/|phr.|期待|I look forward to your reply.|期待您的回复。
-sorry for the late reply|/ˈsɑːri fər ðə leɪt rɪˈplaɪ/|phr.|抱歉回复晚了|Sorry for the late reply, I was busy.|抱歉回复晚了，我刚才很忙。
-keep in touch|/kiːp ɪn tʌtʃ/|phr.|保持联系|Let us keep in touch.|我们保持联系。
-reach out|/riːtʃ aʊt/|phr.|联系；主动联络|Feel free to reach out anytime.|随时可以联系我。
-regarding|/rɪˈɡɑːrdɪŋ/|prep.|关于|Regarding your order, it is ready.|关于您的订单，已经准备好了。
-according to|/əˈkɔːrdɪŋ tuː/|phr.|根据|According to the contract, you pay 30% first.|根据合同，您先付30%。
-inquiry|/ˈɪŋkwəri/|n.|询价；询问|Thank you for your inquiry.|感谢您的询价。
-feedback|/ˈfiːdbæk/|n.|反馈|Any feedback on our samples?|对我们的样品有什么反馈吗？
-request|/rɪˈkwest/|n. / v.|请求；要求|We received your request.|我们收到了您的请求。
-requirement|/rɪˈkwaɪərmənt/|n.|要求；需求|Please tell me your requirements.|请告诉我您的要求。
-detail|/ˈdiːteɪl/|n.|细节；详情|Please send me more details.|请发给我更多详情。
-information|/ˌɪnfərˈmeɪʃən/|n.|信息|I need some information about your shop.|我需要一些关于您店铺的信息。
-phone call|/foʊn kɔːl/|n.|电话|Can we have a quick phone call?|我们可以快速通个电话吗？
-call back|/kɔːl bæk/|phr.|回电话|I will call you back in ten minutes.|我十分钟后给你回电话。
-hold on|/hoʊld ɑːn/|phr.|稍等（电话中）|Hold on, please.|请稍等。
-speaking|/ˈspiːkɪŋ/|v.|（电话中）我就是|Hello, this is Lily speaking.|你好，我是莉莉。
-voice message|/vɔɪs ˈmesɪdʒ/|n.|语音消息|I sent you a voice message.|我给你发了语音消息。
-video call|/ˈvɪdioʊ kɔːl/|n.|视频通话|Can we do a video call now?|我们现在可以视频通话吗？
-missed call|/mɪst kɔːl/|n.|未接来电|Sorry, I saw your missed call.|抱歉，我看到你的未接来电了。
-Is this a good time|/ɪz ðɪs ə ɡʊd taɪm/|phr.|现在方便吗|Is this a good time to talk?|现在方便说话吗？
-convenient|/kənˈviːniənt/|adj.|方便的|When is convenient for you?|您什么时候方便？
-arrange|/əˈreɪndʒ/|v.|安排|I will arrange a meeting.|我会安排一个会议。
-reschedule|/ˌriːˈskedʒuːl/|v.|改期|Can we reschedule to Monday?|我们可以改到周一吗？
-cancel|/ˈkænsəl/|v.|取消|Sorry, I need to cancel the meeting.|抱歉，我需要取消会议。
-postpone|/poʊstˈpoʊn/|v.|推迟|We have to postpone the visit.|我们不得不推迟拜访。
-agenda|/əˈdʒendə/|n.|议程|Here is the agenda for the meeting.|这是会议议程。
-discuss|/dɪˈskʌs/|v.|讨论|Let us discuss the price.|我们来讨论一下价格。
-discussion|/dɪˈskʌʃən/|n.|讨论|Thank you for the good discussion.|谢谢这次愉快的讨论。
-attend|/əˈtend/|v.|参加；出席|I will attend the meeting.|我会参加会议。
-introduce|/ˌɪntrəˈduːs/|v.|介绍|Let me introduce our company.|让我介绍一下我们公司。
-introduction|/ˌɪntrəˈdʌkʃən/|n.|介绍|Here is a short introduction to us.|这是我们的简短介绍。
-presentation|/ˌpriːzenˈteɪʃən/|n.|演示；介绍|I will give a short presentation.|我会做一个简短的介绍。
-slide|/slaɪd/|n.|幻灯片|Please look at this slide.|请看这张幻灯片。
-point|/pɔɪnt/|n.|要点；观点|That is a good point.|这是个好观点。
-summary|/ˈsʌməri/|n.|总结；摘要|Here is a summary of our meeting.|这是我们会议的总结。
-minutes|/ˈmɪnɪts/|n.|会议记录|I will send the meeting minutes.|我会发送会议记录。
-opinion|/əˈpɪniən/|n.|意见；看法|What is your opinion?|您的看法是什么？
-suggest|/səɡˈdʒest/|v.|建议|I suggest you order more this time.|我建议您这次多订一些。
-suggestion|/səɡˈdʒestʃən/|n.|建议|Thank you for your suggestion.|谢谢您的建议。
-advice|/ədˈvaɪs/|n.|建议；忠告|Can you give me some advice?|您能给我一些建议吗？
-recommend|/ˌrekəˈmend/|v.|推荐|I recommend this model.|我推荐这个型号。
-explain|/ɪkˈspleɪn/|v.|解释|Let me explain our service.|让我解释一下我们的服务。
-mean|/miːn/|v.|意思是|What do you mean?|您是什么意思？
-repeat|/rɪˈpiːt/|v.|重复|Could you repeat that, please?|请您再说一遍好吗？
-clear|/klɪr/|adj.|清楚的|Is everything clear?|一切都清楚了吗？
-correct|/kəˈrekt/|adj.|正确的|Is this address correct?|这个地址正确吗？
-wrong|/rɔːŋ/|adj.|错误的|Sorry, the price was wrong.|抱歉，价格错了。
-mention|/ˈmenʃən/|v.|提到|You mentioned a new shop.|您提到了一家新店。
-promise|/ˈprɑːmɪs/|v. / n.|承诺|I promise to send it today.|我保证今天发出。
-company profile|/ˈkʌmpəni ˈproʊfaɪl/|n.|公司简介|Here is our company profile.|这是我们的公司简介。
-headquarters|/ˈhedkwɔːrtərz/|n.|总部|Our headquarters is in Shenzhen.|我们的总部在深圳。
-branch|/bræntʃ/|n.|分公司；分店|Do you have a branch in Sohar?|您在苏哈尔有分店吗？
-founded|/ˈfaʊndɪd/|v.|创立（过去分词）|Our company was founded in 2010.|我们公司成立于2010年。
-agent|/ˈeɪdʒənt/|n.|代理；代理商|We are an agent for DHL and UPS.|我们是DHL和UPS的代理。
-advantage|/ədˈvæntɪdʒ/|n.|优势|Our advantage is fast service.|我们的优势是服务快。
-competitor|/kəmˈpetɪtər/|n.|竞争对手|Our price is lower than competitors.|我们的价格比竞争对手低。
-competitive|/kəmˈpetətɪv/|adj.|有竞争力的|We offer competitive prices.|我们提供有竞争力的价格。
-reasonable|/ˈriːzənəbəl/|adj.|合理的|The price is very reasonable.|这个价格很合理。
-best price|/best praɪs/|n.|最优价|This is our best price.|这是我们的最优价。
-price list|/praɪs lɪst/|n.|价格表|I will send you our price list.|我会把价格表发给您。
-unit price|/ˈjuːnɪt praɪs/|n.|单价|The unit price is two dollars.|单价是两美元。
-price increase|/praɪs ˈɪŋkriːs/|n.|涨价|There is a price increase next month.|下个月会涨价。
-special offer|/ˈspeʃəl ˈɔːfər/|n.|特价优惠|We have a special offer this week.|我们本周有特价优惠。
-promotion|/prəˈmoʊʃən/|n.|促销|This promotion ends on Friday.|这次促销周五结束。
-valid|/ˈvælɪd/|adj.|有效的|This price is valid for seven days.|这个价格七天内有效。
-validity|/vəˈlɪdəti/|n.|有效期|What is the validity of this quote?|这个报价的有效期是多久？
-fixed price|/fɪkst praɪs/|n.|固定价格|This is a fixed price.|这是固定价格。
-negotiable|/nɪˈɡoʊʃiəbəl/|adj.|可商量的|The price is negotiable for big orders.|大订单价格可以商量。
-bargain|/ˈbɑːrɡən/|v. / n.|讨价还价；便宜货|He likes to bargain.|他喜欢讨价还价。
-lower|/ˈloʊər/|v. / adj.|降低；更低的|Can you lower the price a little?|您能把价格降一点吗？
-best offer|/best ˈɔːfər/|n.|最优报价|Please give me your best offer.|请给我您的最优报价。
-counteroffer|/ˈkaʊntərˌɔːfər/|n.|还价|We sent a counteroffer to the factory.|我们给工厂发了还价。
-compromise|/ˈkɑːmprəmaɪz/|n. / v.|妥协；折中|Let us find a compromise.|我们找个折中方案吧。
-meet halfway|/miːt ˌhæfˈweɪ/|phr.|各让一步|Can we meet halfway on the price?|价格上我们各让一步好吗？
-win-win|/ˌwɪn ˈwɪn/|adj.|双赢的|This is a win-win deal.|这是一笔双赢的交易。
-final|/ˈfaɪnəl/|adj.|最终的|Is this your final price?|这是您的最终价格吗？
-accept|/əkˈsept/|v.|接受|We accept your offer.|我们接受您的报价。
-reject|/rɪˈdʒekt/|v.|拒绝|The client rejected our price.|客户拒绝了我们的价格。
-approve|/əˈpruːv/|v.|批准|My boss approved the discount.|我老板批准了折扣。
-agreement|/əˈɡriːmənt/|n.|协议|We signed an agreement today.|我们今天签了协议。
-terms|/tɜːrmz/|n.|条款|Please read the terms carefully.|请仔细阅读条款。
-payment terms|/ˈpeɪmənt tɜːrmz/|n.|付款条件|Our payment terms are 30% deposit.|我们的付款条件是30%定金。
-clause|/klɔːz/|n.|（合同）条款|Please check clause five.|请看第五条。
-draft|/dræft/|n.|草稿|Here is the draft contract.|这是合同草稿。
-signature|/ˈsɪɡnətʃər/|n.|签名|We need your signature here.|这里需要您签名。
-stamp|/stæmp/|n. / v.|印章；盖章|Please sign and stamp the contract.|请在合同上签字盖章。
-copy|/ˈkɑːpi/|n.|副本；份|Please send me a copy.|请发给我一份副本。
-original|/əˈrɪdʒənəl/|adj. / n.|原件；原始的|We need the original document.|我们需要原件。
-valid until|/ˈvælɪd ənˈtɪl/|phr.|有效期至|The contract is valid until December.|合同有效期至十二月。
-expire|/ɪkˈspaɪər/|v.|到期；过期|The agreement expires next year.|协议明年到期。
-renew|/rɪˈnuː/|v.|续签；更新|Do you want to renew the contract?|您想续签合同吗？
-breach|/briːtʃ/|n.|违约|Late payment is a breach of contract.|延迟付款属于违约。
-penalty|/ˈpenəlti/|n.|罚款；违约金|There is a penalty for late delivery.|延迟交货有罚款。
-exclusive|/ɪkˈskluːsɪv/|adj.|独家的|He wants to be our exclusive agent.|他想做我们的独家代理。
-distributor|/dɪˈstrɪbjətər/|n.|经销商|He is a distributor in Oman.|他是阿曼的经销商。
-dealer|/ˈdiːlər/|n.|经销商；商人|We work with local dealers.|我们和当地经销商合作。
-end user|/end ˈjuːzər/|n.|终端用户|Who is the end user?|终端用户是谁？
-amount|/əˈmaʊnt/|n.|金额；数量|What is the total amount?|总金额是多少？
-charge|/tʃɑːrdʒ/|n. / v.|费用；收费|There is no extra charge.|没有额外费用。
-fee|/fiː/|n.|费用；手续费|The bank fee is twenty dollars.|银行手续费是二十美元。
-extra|/ˈekstrə/|adj.|额外的|Is there any extra cost?|有额外费用吗？
-pay in advance|/peɪ ɪn ədˈvæns/|phr.|预付|New clients need to pay in advance.|新客户需要预付。
-full payment|/fʊl ˈpeɪmənt/|n.|全款|We ship after full payment.|全款到账后我们发货。
-cash|/kæʃ/|n.|现金|Do you pay in cash?|您用现金付款吗？
-transfer|/ˈtrænsfɜːr/|n. / v.|转账|I made the transfer this morning.|我今天早上转账了。
-bank details|/bæŋk ˈdiːteɪlz/|n.|银行账户信息|Here are our bank details.|这是我们的银行账户信息。
-bank account|/bæŋk əˈkaʊnt/|n.|银行账户|Please pay to this bank account.|请付款到这个银行账户。
-transfer slip|/ˈtrænsfɜːr slɪp/|n.|转账水单|Please send me the transfer slip.|请把转账水单发给我。
-SWIFT code|/swɪft koʊd/|n.|银行国际代码|What is your bank SWIFT code?|您银行的SWIFT代码是多少？
-proforma invoice|/proʊˈfɔːrmə ˈɪnvɔɪs/|n.|形式发票|I will send you the proforma invoice.|我会发给您形式发票。
-PI|/ˌpiː ˈaɪ/|abbr.|形式发票（缩写）|Please confirm the PI.|请确认形式发票。
-commercial invoice|/kəˈmɜːrʃəl ˈɪnvɔɪs/|n.|商业发票|The commercial invoice is attached.|商业发票在附件里。
-credit note|/ˈkredɪt noʊt/|n.|贷项通知单；退款单|We will issue a credit note.|我们会开一张退款单。
-debit note|/ˈdebɪt noʊt/|n.|借项通知单；补款单|This is a debit note for extra charges.|这是额外费用的补款单。
-statement|/ˈsteɪtmənt/|n.|对账单|Here is your monthly statement.|这是您的月度对账单。
-statement of account|/ˈsteɪtmənt əv əˈkaʊnt/|n.|账户对账单|Please check the statement of account.|请核对账户对账单。
-outstanding|/aʊtˈstændɪŋ/|adj.|未付的|You have an outstanding balance.|您还有未付余额。
-overdue|/ˌoʊvərˈduː/|adj.|逾期的|This invoice is ten days overdue.|这张发票已逾期十天。
-due date|/duː deɪt/|n.|到期日|The due date is next Friday.|到期日是下周五。
-settle|/ˈsetəl/|v.|结清（账款）|Please settle the invoice this week.|请本周结清发票。
-clear the payment|/klɪr ðə ˈpeɪmənt/|phr.|结清付款|Please clear the payment soon.|请尽快结清付款。
-reminder|/rɪˈmaɪndər/|n.|提醒；催款函|This is a friendly reminder.|这是一个友好提醒。
-VAT|/ˌviː eɪ ˈtiː/|abbr.|增值税|Oman VAT is five percent.|阿曼增值税是百分之五。
-tax invoice|/tæks ˈɪnvɔɪs/|n.|税务发票|Do you need a tax invoice?|您需要税务发票吗？
-including VAT|/ɪnˈkluːdɪŋ ˌviː eɪ ˈtiː/|phr.|含增值税|The price is including VAT.|价格含增值税。
-excluding|/ɪkˈskluːdɪŋ/|prep.|不包括|This price is excluding tax.|这个价格不含税。
-net|/net/|adj.|净的|Payment is net 30 days.|付款期为30天净额。
-credit limit|/ˈkredɪt ˈlɪmɪt/|n.|信用额度|Your credit limit is five thousand dollars.|您的信用额度是五千美元。
-credit terms|/ˈkredɪt tɜːrmz/|n.|账期|We can give you 30 days credit terms.|我们可以给您30天账期。
-monthly settlement|/ˈmʌnθli ˈsetəlmənt/|n.|月结|Can we do monthly settlement?|我们可以月结吗？
-installment|/ɪnˈstɔːlmənt/|n.|分期付款|You can pay in two installments.|您可以分两期付款。
-finance|/ˈfaɪnæns/|n.|财务；金融|Please ask our finance team.|请问我们的财务团队。
-accountant|/əˈkaʊntənt/|n.|会计|Our accountant will send the invoice.|我们的会计会发送发票。
-accounting|/əˈkaʊntɪŋ/|n.|会计；账务|The accounting system shows no payment.|账务系统显示没有付款。
-bill|/bɪl/|n. / v.|账单；开账单|We will bill you at month end.|我们会在月底给您开账单。
-billing|/ˈbɪlɪŋ/|n.|开票；账单|Please contact billing for questions.|有问题请联系账单部门。
-revenue|/ˈrevənuː/|n.|收入；营业额|Our revenue grew this year.|我们今年收入增长了。
-expense|/ɪkˈspens/|n.|开支|Travel is a big expense.|出差是一大笔开支。
-loss|/lɔːs/|n.|亏损；损失|We cannot sell at a loss.|我们不能亏本卖。
-gross profit|/ɡroʊs ˈprɑːfɪt/|n.|毛利|What is the gross profit on this order?|这个订单的毛利是多少？
-cost price|/kɔːst praɪs/|n.|成本价|This is almost our cost price.|这几乎是我们的成本价了。
-selling price|/ˈselɪŋ praɪs/|n.|售价|What is your selling price in Oman?|您在阿曼的售价是多少？
-currency|/ˈkɜːrənsi/|n.|货币|Which currency do you pay in?|您用哪种货币付款？
-USD|/ˌjuː es ˈdiː/|abbr.|美元|We quote in USD.|我们用美元报价。
-RMB|/ˌɑːr em ˈbiː/|abbr.|人民币|The factory price is in RMB.|工厂价是人民币。
-complaint|/kəmˈpleɪnt/|n.|投诉|We received a complaint from a client.|我们收到了一位客户的投诉。
-complain|/kəmˈpleɪn/|v.|投诉；抱怨|He complained about the delay.|他投诉了延误。
-apologize|/əˈpɑːlədʒaɪz/|v.|道歉|We apologize for the problem.|对这个问题我们深表歉意。
-apology|/əˈpɑːlədʒi/|n.|道歉|Please accept our apology.|请接受我们的道歉。
-inconvenience|/ˌɪnkənˈviːniəns/|n.|不便|Sorry for the inconvenience.|抱歉给您带来不便。
-issue|/ˈɪʃuː/|n.|问题|We are solving this issue now.|我们正在解决这个问题。
-solution|/səˈluːʃən/|n.|解决方案|We have a solution for you.|我们为您准备了解决方案。
-handle|/ˈhændəl/|v.|处理|I will handle it myself.|我会亲自处理。
-compensate|/ˈkɑːmpenseɪt/|v.|赔偿|We will compensate you for the loss.|我们会赔偿您的损失。
-compensation|/ˌkɑːmpenˈseɪʃən/|n.|赔偿|The compensation is fifty dollars.|赔偿金额是五十美元。
-replace|/rɪˈpleɪs/|v.|更换|We will replace the broken items.|我们会更换坏的货物。
-replacement|/rɪˈpleɪsmənt/|n.|替换品|The replacement will arrive next week.|替换品下周到。
-return|/rɪˈtɜːrn/|v. / n.|退回；退货|Can I return these goods?|我可以退回这些货吗？
-claim|/kleɪm/|n. / v.|索赔|Please send photos for the claim.|索赔请发照片。
-evidence|/ˈevɪdəns/|n.|证据|We need photos as evidence.|我们需要照片作为证据。
-investigate|/ɪnˈvestɪɡeɪt/|v.|调查|We will investigate the problem.|我们会调查这个问题。
-satisfied|/ˈsætɪsfaɪd/|adj.|满意的|Are you satisfied with our service?|您对我们的服务满意吗？
-unhappy|/ʌnˈhæpi/|adj.|不满意的|The client is unhappy with the delay.|客户对延误不满意。
-patience|/ˈpeɪʃəns/|n.|耐心|Thank you for your patience.|感谢您的耐心。
-understanding|/ˌʌndərˈstændɪŋ/|n.|理解；体谅|Thank you for your understanding.|感谢您的理解。
-urgent|/ˈɜːrdʒənt/|adj.|紧急的|This order is very urgent.|这个订单非常紧急。
-priority|/praɪˈɔːrəti/|n.|优先事项|Your order is our priority.|您的订单是我们的优先事项。
-after-sales service|/ˌæftər seɪlz ˈsɜːrvɪs/|n.|售后服务|We offer good after-sales service.|我们提供良好的售后服务。
-customer service|/ˈkʌstəmər ˈsɜːrvɪs/|n.|客户服务|Our customer service is online 24 hours.|我们的客服24小时在线。
-reliable|/rɪˈlaɪəbəl/|adj.|可靠的|We are a reliable partner.|我们是可靠的合作伙伴。
-professional|/prəˈfeʃənəl/|adj.|专业的|Our team is very professional.|我们的团队非常专业。
-responsibility|/rɪˌspɑːnsəˈbɪləti/|n.|责任|This is our responsibility.|这是我们的责任。
-fault|/fɔːlt/|n.|过错|It was not your fault.|这不是您的错。
-misunderstanding|/ˌmɪsʌndərˈstændɪŋ/|n.|误会|Sorry, there was a misunderstanding.|抱歉，之前有误会。
-marketing|/ˈmɑːrkɪtɪŋ/|n.|市场营销|We spend money on marketing in Oman.|我们在阿曼做市场营销投入。
-advertise|/ˈædvərtaɪz/|v.|做广告|We advertise on Facebook.|我们在脸书上做广告。
-advertisement|/ˌædvərˈtaɪzmənt/|n.|广告|I saw your advertisement online.|我在网上看到了您的广告。
-brand|/brænd/|n.|品牌|Which brand do you sell?|您卖哪个品牌？
-brochure|/broʊˈʃʊr/|n.|宣传册|Here is our brochure.|这是我们的宣传册。
-flyer|/ˈflaɪər/|n.|传单|I left a flyer at your shop.|我在您店里留了一张传单。
-website|/ˈwebsaɪt/|n.|网站|Please visit our website.|请访问我们的网站。
-social media|/ˈsoʊʃəl ˈmiːdiə/|n.|社交媒体|We post new products on social media.|我们在社交媒体上发布新品。
-target|/ˈtɑːrɡɪt/|n. / v.|目标；瞄准|Our target is hardware shops.|我们的目标是五金店。
-target market|/ˈtɑːrɡɪt ˈmɑːrkɪt/|n.|目标市场|Oman is our new target market.|阿曼是我们新的目标市场。
-demand|/dɪˈmænd/|n.|需求|There is high demand for tiles.|瓷砖需求很大。
-trend|/trend/|n.|趋势|What is the trend in your market?|您那里市场趋势如何？
-best seller|/best ˈselər/|n.|畅销品|This lock is our best seller.|这款锁是我们的畅销品。
-potential customer|/pəˈtenʃəl ˈkʌstəmər/|n.|潜在客户|He is a potential customer.|他是一位潜在客户。
-lead|/liːd/|n.|销售线索|I found ten new leads this week.|我这周找到了十条新线索。
-regular customer|/ˈreɡjələr ˈkʌstəmər/|n.|老客户|He is our regular customer.|他是我们的老客户。
-repeat order|/rɪˈpiːt ˈɔːrdər/|n.|返单；复购订单|Thank you for the repeat order.|感谢您再次下单。
-trial order|/ˈtraɪəl ˈɔːrdər/|n.|试订单|Let us start with a trial order.|我们先从试订单开始吧。
-place an order|/pleɪs ən ˈɔːrdər/|phr.|下订单|I want to place an order today.|我今天想下单。
-purchase|/ˈpɜːrtʃəs/|v. / n.|购买；采购|We purchase from many factories.|我们从很多工厂采购。
-purchase order|/ˈpɜːrtʃəs ˈɔːrdər/|n.|采购订单|Please send us your purchase order.|请把采购订单发给我们。
-PO|/ˌpiː ˈoʊ/|abbr.|采购订单（缩写）|What is your PO number?|您的采购订单号是多少？
-buyer|/ˈbaɪər/|n.|买家；采购员|He is the buyer for the company.|他是公司的采购员。
-seller|/ˈselər/|n.|卖家|The seller is a factory in Foshan.|卖家是佛山的一家工厂。
-manufacturer|/ˌmænjəˈfæktʃərər/|n.|制造商|We work directly with the manufacturer.|我们直接和制造商合作。
-OEM|/ˌoʊ iː ˈem/|abbr.|贴牌代工|The factory can do OEM with your logo.|工厂可以用您的商标贴牌生产。
-logo|/ˈloʊɡoʊ/|n.|商标；标志|Can you print our logo on it?|能印上我们的商标吗？
-customize|/ˈkʌstəmaɪz/|v.|定制|We can customize the color.|我们可以定制颜色。
-specification|/ˌspesəfɪˈkeɪʃən/|n.|规格|Please send the product specifications.|请发送产品规格。
-production|/prəˈdʌkʃən/|n.|生产|Production takes about two weeks.|生产大约需要两周。
-capacity|/kəˈpæsəti/|n.|产能|What is the factory capacity?|工厂产能是多少？
-deadline|/ˈdedlaɪn/|n.|截止日期|The deadline is this Friday.|截止日期是本周五。
-progress|/ˈprɑːɡres/|n.|进度|I will update you on the progress.|我会告诉您进度。
-trade fair|/treɪd fer/|n.|贸易展会|We met at the trade fair.|我们在展会上认识的。
-Canton Fair|/ˈkæntɑːn fer/|n.|广交会|Will you come to the Canton Fair?|您会来广交会吗？
-exhibition|/ˌeksɪˈbɪʃən/|n.|展览会|The exhibition is in Guangzhou.|展览会在广州。
-booth|/buːθ/|n.|展位|Please visit our booth.|欢迎参观我们的展位。
-booth number|/buːθ ˈnʌmbər/|n.|展位号|Our booth number is 12.1 A05.|我们的展位号是12.1 A05。
-exhibitor|/ɪɡˈzɪbɪtər/|n.|参展商|There are many exhibitors this year.|今年参展商很多。
-visitor|/ˈvɪzɪtər/|n.|访客；参观者|We had many visitors from Oman.|我们有很多阿曼的访客。
-invitation|/ˌɪnvɪˈteɪʃən/|n.|邀请|Thank you for the invitation.|谢谢您的邀请。
-invite|/ɪnˈvaɪt/|v.|邀请|I invite you to visit our office.|我邀请您参观我们的办公室。
-visa|/ˈviːzə/|n.|签证|Do you need a visa to China?|您来中国需要签证吗？
-business trip|/ˈbɪznəs trɪp/|n.|出差|I am on a business trip in Muscat.|我在马斯喀特出差。
-pick up|/pɪk ʌp/|phr.|接（人）|I will pick you up at the airport.|我会去机场接您。
-cooperate|/koʊˈɑːpəreɪt/|v.|合作|We hope to cooperate with you.|我们希望和您合作。
-cooperation|/koʊˌɑːpəˈreɪʃən/|n.|合作|Thank you for your cooperation.|感谢您的合作。
-relationship|/rɪˈleɪʃənʃɪp/|n.|关系|We want a long relationship with you.|我们希望和您长期合作。
-opportunity|/ˌɑːpərˈtuːnəti/|n.|机会|This is a good opportunity for us.|这对我们是个好机会。
-potential|/pəˈtenʃəl/|n. / adj.|潜力；潜在的|Oman has big potential.|阿曼有很大潜力。
-benefit|/ˈbenɪfɪt/|n.|好处；利益|What is the benefit for my shop?|对我的店有什么好处？
-proposal|/prəˈpoʊzəl/|n.|提案；方案|Here is our proposal.|这是我们的方案。
-option|/ˈɑːpʃən/|n.|选项|We have two options for you.|我们有两个选项给您。
-estimate|/ˈestɪmeɪt/|n. / v.|估计；估价|This is only an estimate.|这只是个估价。
-approximately|/əˈprɑːksɪmətli/|adv.|大约|It costs approximately 500 dollars.|大约花费500美元。
-per|/pɜːr/|prep.|每|The price is 3 dollars per piece.|价格是每件3美元。
-in total|/ɪn ˈtoʊtəl/|phr.|总共|It is 800 dollars in total.|总共是800美元。
-on behalf of|/ɑːn bɪˈhæf əv/|phr.|代表|I write on behalf of my company.|我代表我的公司写信。
-at your earliest convenience|/æt jʊr ˈɜːrliəst kənˈviːniəns/|phr.|在您方便时尽早|Please reply at your earliest convenience.|请您方便时尽早回复。
-please find attached|/pliːz faɪnd əˈtætʃt/|phr.|请查收附件|Please find attached the invoice.|请查收附件中的发票。
-double-check|/ˌdʌbəl ˈtʃek/|v.|再次核对|Let me double-check the price.|让我再核对一下价格。
-on schedule|/ɑːn ˈskedʒuːl/|phr.|按计划|Everything is on schedule.|一切都按计划进行。
-keep you updated|/kiːp juː ˌʌpˈdeɪtɪd/|phr.|随时告知您|I will keep you updated.|我会随时告知您进展。
-in stock|/ɪn stɑːk/|phr.|有现货|This model is in stock.|这个型号有现货。
-out of stock|/aʊt əv stɑːk/|phr.|缺货|Sorry, it is out of stock.|抱歉，缺货了。
-commission|/kəˈmɪʃən/|n.|佣金|The agent gets five percent commission.|代理拿百分之五的佣金。
-annual|/ˈænjuəl/|adj.|年度的|What is your annual sales volume?|您的年销售量是多少？
-market share|/ˈmɑːrkɪt ʃer/|n.|市场份额|We want more market share in Oman.|我们想在阿曼获得更多市场份额。
-`;
-
-;
-// 物流货代单词
-const WORDS_LOGI = `
-shipper|/ˈʃɪpər/|n.|发货人；托运人|Please send me the shipper's name and address.|请把发货人的名称和地址发给我。
-consignee|/ˌkɑːnsaɪˈniː/|n.|收货人|Who is the consignee in Oman?|阿曼的收货人是谁？
-notify party|/ˈnoʊtɪfaɪ ˈpɑːrti/|n.|通知方|The notify party is the same as the consignee.|通知方和收货人相同。
-carrier|/ˈkæriər/|n.|承运人；船公司/航空公司|Which carrier do you prefer, MSC or Maersk?|你想用哪家船公司，MSC还是马士基？
-waybill|/ˈweɪbɪl/|n.|运单|Please print the waybill and stick it on the box.|请打印运单并贴在箱子上。
-AWB|/ˌeɪ ˌdʌbəljuː ˈbiː/|n.|空运提单（Air Waybill）|The AWB number is on the top right.|空运提单号在右上角。
-MAWB|/ˌɛm ˌeɪ ˌdʌbəljuː ˈbiː/|n.|主运单（Master Air Waybill）|The airline issues the MAWB to us.|航空公司给我们出主单。
-HAWB|/ˌeɪtʃ ˌeɪ ˌdʌbəljuː ˈbiː/|n.|分运单（House Air Waybill）|We issue the HAWB to the shipper.|我们给发货人出分单。
-telex release|/ˈtɛlɛks rɪˈliːs/|n.|电放|Please arrange telex release after payment.|付款后请安排电放。
-original B/L|/əˈrɪdʒənl ˌbiː ˈɛl/|n.|正本提单|The original B/L was sent by DHL.|正本提单已经用DHL寄出。
-commercial invoice|/kəˈmɜːrʃl ˈɪnvɔɪs/|n.|商业发票|Customs needs the commercial invoice and packing list.|海关需要商业发票和装箱单。
-chargeable weight|/ˈtʃɑːrdʒəbl weɪt/|n.|计费重|The chargeable weight is 25 kilograms.|计费重是25公斤。
-volumetric weight|/ˌvɑːljəˈmɛtrɪk weɪt/|n.|体积重|Volumetric weight is higher than the actual weight.|体积重比实重高。
-dimensional weight|/dɪˈmɛnʃənl weɪt/|n.|材积重（体积重）|UPS uses dimensional weight for big light boxes.|UPS对大而轻的箱子按材积重计费。
-actual weight|/ˈæktʃuəl weɪt/|n.|实重|What is the actual weight of each carton?|每箱的实重是多少？
-fuel surcharge|/ˈfjuːəl ˈsɜːrtʃɑːrdʒ/|n.|燃油附加费|The fuel surcharge this week is 28 percent.|本周燃油附加费是28%。
-peak season surcharge|/piːk ˈsiːzn ˈsɜːrtʃɑːrdʒ/|n.|旺季附加费|DHL adds a peak season surcharge from October.|DHL从十月开始加收旺季附加费。
-remote area surcharge|/rɪˈmoʊt ˈɛriə ˈsɜːrtʃɑːrdʒ/|n.|偏远附加费|This address has a remote area surcharge.|这个地址有偏远附加费。
-surcharge|/ˈsɜːrtʃɑːrdʒ/|n.|附加费|Are all surcharges included in this price?|这个价格包含所有附加费吗？
-zone|/zoʊn/|n.|分区|Oman is in Zone 6 for this account.|这个账号下阿曼在第6区。
-rate|/reɪt/|n.|运价；费率|The rate is 5 dollars per kilogram.|运价是每公斤5美元。
-account number|/əˈkaʊnt ˈnʌmbər/|n.|（快递）账号|Which account number should I use for this shipment?|这票货用哪个账号？
-pickup|/ˈpɪkʌp/|n.|上门取件；提货|Can you arrange a pickup tomorrow morning?|明天上午能安排上门取件吗？
-proof of delivery|/pruːf əv dɪˈlɪvəri/|n.|签收证明（POD）|Please send me the proof of delivery.|请把签收证明发给我。
-in transit|/ɪn ˈtrænzɪt/|phr.|运输途中|Your parcel is in transit to Muscat.|你的包裹正在运往马斯喀特途中。
-out for delivery|/aʊt fər dɪˈlɪvəri/|phr.|派送中|The status shows out for delivery.|状态显示派送中。
-delivered|/dɪˈlɪvərd/|adj.|已签收；已派送|The tracking says delivered at 3 p.m.|轨迹显示下午3点已签收。
-customs cleared|/ˈkʌstəmz klɪrd/|phr.|已清关|The shipment was customs cleared today.|这票货今天已清关。
-HS code|/ˌeɪtʃ ˈɛs koʊd/|n.|海关编码（Harmonized System code）|Please confirm the HS code for these tiles.|请确认这些瓷砖的海关编码。
-Incoterms|/ˈɪnkoʊtɜːrmz/|n.|国际贸易术语（International Commercial Terms）|Which Incoterms do you use, FOB or EXW?|你们用哪个贸易术语，FOB还是EXW？
-EXW|/ˌiː ɛks ˈdʌbəljuː/|n.|工厂交货（Ex Works）|The price is EXW, pickup from our factory.|价格是工厂交货，从我们工厂提货。
-FCA|/ˌɛf siː ˈeɪ/|n.|货交承运人（Free Carrier）|Under FCA, we deliver to your forwarder.|按FCA条款，我们把货交给你的货代。
-CFR|/ˌsiː ɛf ˈɑːr/|n.|成本加运费（Cost and Freight）|We can quote CFR Sohar port.|我们可以报CFR苏哈尔港的价格。
-DAP|/ˌdiː eɪ ˈpiː/|n.|目的地交货（Delivered at Place）|Under DAP, the buyer pays import duty.|按DAP条款，买家支付进口关税。
-THC|/ˌtiː eɪtʃ ˈsiː/|n.|码头操作费（Terminal Handling Charge）|THC at destination is paid by the consignee.|目的港码头操作费由收货人支付。
-BAF|/ˌbiː eɪ ˈɛf/|n.|海运燃油附加费（Bunker Adjustment Factor）|The carrier raised the BAF this month.|船公司这个月上调了燃油附加费。
-demurrage|/dɪˈmɜːrɪdʒ/|n.|滞港费（码头超期堆存费）|Pick up the container soon to avoid demurrage.|尽快提柜，避免产生滞港费。
-detention|/dɪˈtɛnʃn/|n.|滞箱费（超期用箱费）|Return the empty container on time, or pay detention.|按时还空柜，否则要付滞箱费。
-free time|/friː taɪm/|n.|免费期（免堆期/免用箱期）|We have 14 days of free time at destination.|目的港有14天免费期。
-20GP|/ˈtwɛnti ˌdʒiː ˈpiː/|n.|20尺普柜（20-foot General Purpose）|One 20GP can load about 28 cubic meters.|一个20尺普柜大约能装28方。
-40GP|/ˈfɔːrti ˌdʒiː ˈpiː/|n.|40尺普柜（40-foot General Purpose）|Is one 40GP enough for this order?|这批货一个40尺普柜够吗？
-40HQ|/ˈfɔːrti ˌeɪtʃ ˈkjuː/|n.|40尺高柜（40-foot High Cube）|A 40HQ is about 30 centimeters taller than a 40GP.|40尺高柜比40尺普柜高约30厘米。
-reefer|/ˈriːfər/|n.|冷藏柜|Frozen food must go in a reefer.|冷冻食品必须用冷藏柜。
-flat rack|/flæt ræk/|n.|框架箱|The machine is too wide, so we need a flat rack.|机器太宽，需要用框架箱。
-open top|/ˈoʊpən tɑːp/|n.|开顶箱|Load the tall steel parts in an open top.|高的钢件用开顶箱装。
-FCL|/ˌɛf siː ˈɛl/|n.|整柜（Full Container Load）|This order is big enough for FCL.|这批货量够走整柜。
-consolidation|/kənˌsɑːlɪˈdeɪʃn/|n.|拼箱；集运|We do weekly consolidation to Jebel Ali.|我们每周都有到杰贝阿里的拼箱。
-NVOCC|/ˌɛn ˌviː ˌoʊ ˌsiː ˌsiː ˈsiː/|n.|无船承运人（Non-Vessel Operating Common Carrier）|We are an NVOCC and issue our own B/L.|我们是无船承运人，可以出自己的提单。
-customs broker|/ˈkʌstəmz ˈbroʊkər/|n.|报关行；清关代理|Our customs broker in Oman will handle clearance.|我们在阿曼的报关行会处理清关。
-agent|/ˈeɪdʒənt/|n.|代理|Our agent in Muscat will contact you.|我们在马斯喀特的代理会联系你。
-freight forwarder|/freɪt ˈfɔːrwərdər/|n.|货运代理（货代）|We are a freight forwarder in Shenzhen.|我们是深圳的一家货代。
-airline|/ˈɛrlaɪn/|n.|航空公司|Which airline flies directly to Muscat?|哪家航空公司直飞马斯喀特？
-shipping line|/ˈʃɪpɪŋ laɪn/|n.|船公司|The shipping line changed the vessel name.|船公司换了船名。
-vessel|/ˈvɛsl/|n.|船；船舶|The vessel leaves Shanghai on Friday.|船周五从上海开。
-voyage|/ˈvɔɪɪdʒ/|n.|航次|Please check the vessel name and voyage number.|请核对船名和航次。
-ETD|/ˌiː tiː ˈdiː/|n.|预计离港时间（Estimated Time of Departure）|The ETD is November 20.|预计开船时间是11月20日。
-ETA|/ˌiː tiː ˈeɪ/|n.|预计到港时间（Estimated Time of Arrival）|What is the ETA at Sohar?|到苏哈尔的预计到港时间是什么时候？
-transit time|/ˈtrænzɪt taɪm/|n.|运输时效；航程|Transit time by sea is about 18 days.|海运时效大约18天。
-cut-off|/ˈkʌt ɔːf/|n.|截关；截止时间|The cut-off for this vessel is Wednesday noon.|这条船周三中午截关。
-booking|/ˈbʊkɪŋ/|n.|订舱|Please send the booking form today.|请今天发订舱单。
-space|/speɪs/|n.|舱位|Space is very tight before Chinese New Year.|春节前舱位很紧张。
-booking confirmation|/ˈbʊkɪŋ ˌkɑːnfərˈmeɪʃn/|n.|订舱确认（放舱单）|We got the booking confirmation from the carrier.|我们收到船公司的放舱确认了。
-SO|/ˌɛs ˈoʊ/|n.|订舱单；放舱单（Shipping Order）|I will send you the SO this afternoon.|我下午把放舱单发给你。
-loading|/ˈloʊdɪŋ/|n.|装货；装柜|Container loading is at your factory on Monday.|周一在你们工厂装柜。
-unloading|/ʌnˈloʊdɪŋ/|n.|卸货|Unloading takes about two hours.|卸货大约需要两小时。
-port of loading|/pɔːrt əv ˈloʊdɪŋ/|n.|起运港（POL）|The port of loading is Ningbo.|起运港是宁波。
-port of discharge|/pɔːrt əv ˈdɪstʃɑːrdʒ/|n.|卸货港（POD）|The port of discharge is Sohar, Oman.|卸货港是阿曼苏哈尔。
-destination|/ˌdɛstɪˈneɪʃn/|n.|目的地；目的港|What are the charges at destination?|目的港有哪些费用？
-origin|/ˈɔːrɪdʒɪn/|n.|起运地|Origin charges are paid by the shipper.|起运地费用由发货人支付。
-transshipment|/trænsˈʃɪpmənt/|n.|转运；中转|This route has transshipment in Singapore.|这条航线在新加坡中转。
-direct|/dəˈrɛkt/|adj.|直达的|Is it a direct vessel or via Jebel Ali?|是直航还是经杰贝阿里中转？
-seal|/siːl/|n.|封条；铅封|Please write the seal number on the packing list.|请把封条号写在装箱单上。
-container number|/kənˈteɪnər ˈnʌmbər/|n.|柜号；箱号|Send me the container number and seal number.|把柜号和封条号发给我。
-VGM|/ˌviː dʒiː ˈɛm/|n.|核实总重（Verified Gross Mass）|VGM must be submitted before cut-off.|核实总重必须在截关前提交。
-SI|/ˌɛs ˈaɪ/|n.|补料；提单确认信息（Shipping Instruction）|Please send the SI for the B/L draft.|请发补料信息用来出提单草稿。
-B/L draft|/ˌbiː ˈɛl dræft/|n.|提单草稿；提单确认件|Please check the B/L draft and confirm.|请核对提单草稿并确认。
-MBL|/ˌɛm biː ˈɛl/|n.|船东提单；主提单（Master Bill of Lading）|The MBL is issued by the shipping line.|船东提单由船公司签发。
-HBL|/ˌeɪtʃ biː ˈɛl/|n.|货代提单；分提单（House Bill of Lading）|We will issue an HBL for your LCL cargo.|我们给你的拼箱货出货代提单。
-sea waybill|/siː ˈweɪbɪl/|n.|海运单|With a sea waybill, no original is needed.|用海运单就不需要正本。
-release|/rɪˈliːs/|v.|放货；放行|We release the cargo after full payment.|全款到账后我们放货。
-delivery order|/dɪˈlɪvəri ˈɔːrdər/|n.|提货单（D/O）|The consignee needs the delivery order to pick up.|收货人需要提货单才能提货。
-arrival notice|/əˈraɪvl ˈnoʊtɪs/|n.|到货通知|We sent the arrival notice to the consignee.|我们已向收货人发了到货通知。
-CO|/ˌsiː ˈoʊ/|n.|原产地证（Certificate of Origin）|Oman customs asks for a CO.|阿曼海关要求提供原产地证。
-MSDS|/ˌɛm ˌɛs ˌdiː ˈɛs/|n.|化学品安全技术说明书（Material Safety Data Sheet）|Please provide MSDS for the batteries.|请提供电池的MSDS。
-dangerous goods|/ˈdeɪndʒərəs ɡʊdz/|n.|危险品（DG）|Dangerous goods need special packing and labels.|危险品需要特殊包装和标签。
-lithium battery|/ˈlɪθiəm ˈbætəri/|n.|锂电池|Lithium batteries cannot go by normal express.|锂电池不能走普通快递。
-UN number|/ˌjuː ˈɛn ˈnʌmbər/|n.|联合国危险品编号|The UN number for lithium batteries is UN3480.|锂电池的UN编号是UN3480。
-UN38.3|/ˌjuː ɛn ˌθɜːrti ˈeɪt pɔɪnt ˈθriː/|n.|锂电池运输测试报告|The airline needs the UN38.3 test report.|航空公司需要UN38.3测试报告。
-DG declaration|/ˌdiː ˈdʒiː ˌdɛkləˈreɪʃn/|n.|危险品申报单|The airline rejected the DG declaration.|航空公司退回了危险品申报单。
-sensitive cargo|/ˈsɛnsətɪv ˈkɑːrɡoʊ/|n.|敏感货|Batteries and liquids are sensitive cargo.|电池和液体属于敏感货。
-cargo|/ˈkɑːrɡoʊ/|n.|货物|When will the cargo be ready?|货什么时候能准备好？
-general cargo|/ˈdʒɛnərəl ˈkɑːrɡoʊ/|n.|普货|This is general cargo, no battery inside.|这是普货，里面没有电池。
-prohibited items|/proʊˈhɪbɪtɪd ˈaɪtəmz/|n.|禁运品|Check the list of prohibited items first.|先查一下禁运品清单。
-restricted|/rɪˈstrɪktɪd/|adj.|限制的；受限运输的|Perfume is restricted for air shipping.|香水属于空运限制品。
-customs declaration|/ˈkʌstəmz ˌdɛkləˈreɪʃn/|n.|报关单；报关|We will file the customs declaration tomorrow.|我们明天报关。
-customs hold|/ˈkʌstəmz hoʊld/|n.|海关扣货|The parcel is on customs hold in Muscat.|包裹在马斯喀特被海关扣了。
-on hold|/ɑːn hoʊld/|phr.|被扣留；暂停处理|Your shipment is on hold for missing documents.|你的货因缺文件被扣。
-import duty|/ˈɪmpɔːrt ˈduːti/|n.|进口关税|Import duty in Oman is usually 5 percent.|阿曼的进口关税一般是5%。
-VAT|/ˌviː eɪ ˈtiː/|n.|增值税（Value Added Tax）|Oman charges 5 percent VAT on imports.|阿曼对进口货物征收5%增值税。
-duties and taxes|/ˈduːtiz ənd ˈtæksɪz/|n.|关税和税金（税费）|Under DDP, we pay the duties and taxes.|按DDP条款，税费由我们支付。
-declared value|/dɪˈklɛrd ˈvæljuː/|n.|申报价值|The declared value is 800 US dollars.|申报价值是800美元。
-undervalue|/ˌʌndərˈvæljuː/|v.|低报（货值）|Do not undervalue the goods, customs may check.|不要低报货值，海关可能查验。
-customs inspection|/ˈkʌstəmz ɪnˈspɛkʃn/|n.|海关查验|The container was selected for customs inspection.|这个柜子被抽中海关查验。
-release note|/rɪˈliːs noʊt/|n.|放行单|Customs gave us the release note this morning.|海关今天早上给了放行单。
-importer of record|/ˈɪmpɔːrtər əv ˈrɛkərd/|n.|登记进口商（IOR）|Who will be the importer of record?|谁做登记进口商？
-importer|/ɪmˈpɔːrtər/|n.|进口商|The importer must have a customs code.|进口商必须有海关编码。
-exporter|/ɪkˈspɔːrtər/|n.|出口商|The exporter signs the commercial invoice.|出口商在商业发票上签字。
-tax ID|/tæks ˌaɪ ˈdiː/|n.|税号|Please provide the consignee's tax ID.|请提供收货人的税号。
-power of attorney|/ˈpaʊər əv əˈtɜːrni/|n.|委托书（报关委托书）|The broker needs a power of attorney to clear.|报关行需要委托书才能清关。
-GCC|/ˌdʒiː siː ˈsiː/|n.|海湾合作委员会国家（Gulf Cooperation Council）|We deliver DDP to all GCC countries.|我们可以DDP派送到所有海湾国家。
-Muscat|/ˈmʌskæt/|n.|马斯喀特（阿曼首都）|Delivery to Muscat takes 5 to 7 days.|到马斯喀特派送需要5到7天。
-Sohar|/ˈsoʊhɑːr/|n.|苏哈尔（阿曼港口）|Sohar is a main sea port in Oman.|苏哈尔是阿曼的主要海港。
-Jebel Ali|/ˈdʒɛbəl ˈɑːli/|n.|杰贝阿里港（迪拜）|Many ships to Oman go via Jebel Ali.|很多去阿曼的船经杰贝阿里中转。
-address correction|/əˈdrɛs kəˈrɛkʃn/|n.|地址更正（改地址费）|UPS charged an address correction fee.|UPS收了一笔地址更正费。
-return to sender|/rɪˈtɜːrn tə ˈsɛndər/|phr.|退回发件人（退件）|The parcel will return to sender if unpaid.|如果不付款，包裹会退回发件人。
-RTS|/ˌɑːr tiː ˈɛs/|n.|退件（Return to Sender）|RTS charges are paid by the shipper.|退件费用由发货人承担。
-signature|/ˈsɪɡnətʃər/|n.|签名；签收|Delivery needs the receiver's signature.|派送需要收件人签收。
-receiver|/rɪˈsiːvər/|n.|收件人|The receiver's phone number is missing.|收件人电话缺了。
-sender|/ˈsɛndər/|n.|寄件人|Please fill in the sender's information.|请填写寄件人信息。
-parcel|/ˈpɑːrsl/|n.|包裹|How many parcels are in this shipment?|这票货有几个包裹？
-label|/ˈleɪbl/|n.|标签；面单|The label fell off during transit.|运输途中面单掉了。
-shipping label|/ˈʃɪpɪŋ ˈleɪbl/|n.|快递面单|Print the shipping label from the system.|从系统里打印快递面单。
-tracking|/ˈtrækɪŋ/|n.|物流轨迹；跟踪查询|The tracking has not updated for three days.|轨迹三天没更新了。
-status|/ˈsteɪtəs/|n.|状态|What is the status of my shipment?|我的货现在什么状态？
-picked up|/pɪkt ʌp/|phr.|已揽收|The status shows picked up in Shenzhen.|状态显示已在深圳揽收。
-departed facility|/dɪˈpɑːrtɪd fəˈsɪləti/|phr.|已离开处理中心|Departed facility in Hong Kong this morning.|今早已离开香港处理中心。
-arrived at facility|/əˈraɪvd æt fəˈsɪləti/|phr.|已到达处理中心|Arrived at facility in Dubai.|已到达迪拜处理中心。
-delivery attempted|/dɪˈlɪvəri əˈtɛmptɪd/|phr.|派送未成功（已尝试派送）|Delivery attempted, receiver not available.|派送未成功，收件人不在。
-exception|/ɪkˈsɛpʃn/|n.|异常件；派送异常|The tracking shows an exception.|轨迹显示异常。
-lost|/lɔːst/|adj.|丢失的|The carrier confirmed the parcel is lost.|承运人确认包裹丢了。
-damaged|/ˈdæmɪdʒd/|adj.|破损的|Two cartons arrived damaged.|有两箱到货破损。
-delayed|/dɪˈleɪd/|adj.|延误的|The flight was delayed because of weather.|航班因天气延误了。
-claim|/kleɪm/|n.|索赔|We will file a claim with DHL.|我们会向DHL提出索赔。
-compensation|/ˌkɑːmpɛnˈseɪʃn/|n.|赔偿|The maximum compensation is 100 dollars per parcel.|每个包裹最高赔偿100美元。
-liability|/ˌlaɪəˈbɪləti/|n.|赔偿责任；责任|The carrier's liability is limited.|承运人的赔偿责任是有限的。
-shortage|/ˈʃɔːrtɪdʒ/|n.|短少；缺货|The consignee reported a shortage of five cartons.|收货人反映少了五箱。
-investigation|/ɪnˌvɛstɪˈɡeɪʃn/|n.|调查（查件）|We opened an investigation with FedEx.|我们已向FedEx申请查件。
-missing|/ˈmɪsɪŋ/|adj.|缺少的；找不到的|One piece is missing from the shipment.|这票货少了一件。
-reroute|/ˌriːˈruːt/|v.|改派；改变路线|Can we reroute the parcel to a new address?|能把包裹改派到新地址吗？
-redelivery|/ˌriːdɪˈlɪvəri/|n.|二次派送|Please arrange redelivery on Sunday.|请安排周日二次派送。
-oversize|/ˈoʊvərsaɪz/|adj.|超尺寸的|This box is oversize, extra charges apply.|这个箱子超尺寸，要加收费用。
-overweight|/ˌoʊvərˈweɪt/|adj.|超重的|One carton is overweight, over 70 kilograms.|有一箱超重，超过70公斤。
-additional handling|/əˈdɪʃənl ˈhændlɪŋ/|n.|附加操作费（超长超重费）|UPS adds additional handling for long boxes.|UPS对超长箱子加收附加操作费。
-handling fee|/ˈhændlɪŋ fiː/|n.|操作费；处理费|Our handling fee is 30 dollars per shipment.|我们每票收30美元操作费。
-price list|/praɪs lɪst/|n.|价格表|I will send you our new price list.|我把新的价格表发给你。
-zone chart|/zoʊn tʃɑːrt/|n.|分区表|Check the zone chart before quoting.|报价前先查分区表。
-base rate|/beɪs reɪt/|n.|基础运费（基本价）|The base rate does not include fuel.|基础运费不含燃油。
-net rate|/nɛt reɪt/|n.|净价；底价|This is our net rate, no commission.|这是我们的底价，不含佣金。
-per kilogram|/pər ˈkɪləɡræm/|phr.|每公斤|Above 21 kilograms, we charge per kilogram.|21公斤以上按每公斤计费。
-first weight|/fɜːrst weɪt/|n.|首重|First weight is 0.5 kilograms.|首重是0.5公斤。
-additional weight|/əˈdɪʃənl weɪt/|n.|续重|Each additional 0.5 kilograms costs 4 dollars.|每续重0.5公斤收4美元。
-minimum charge|/ˈmɪnɪməm tʃɑːrdʒ/|n.|最低收费|The minimum charge is one cubic meter.|最低按一方收费。
-round up|/raʊnd ʌp/|phr.|向上取整（进位）|Weight is rounded up to the next half kilogram.|重量按0.5公斤向上取整。
-divisor|/dɪˈvaɪzər/|n.|（材积）除数|The volumetric divisor is 5000 for DHL.|DHL的材积除数是5000。
-length|/lɛŋθ/|n.|长度|Length times width times height, divided by 5000.|长乘宽乘高，再除以5000。
-width|/wɪdθ/|n.|宽度|The width of the box is 40 centimeters.|箱子宽40厘米。
-height|/haɪt/|n.|高度|Pallet height must be under 160 centimeters.|托盘高度不能超过160厘米。
-centimeter|/ˈsɛntɪmiːtər/|n.|厘米|Please give the size in centimeters.|请用厘米给出尺寸。
-CBM|/ˌsiː biː ˈɛm/|n.|立方米（Cubic Meter）|The LCL rate is 40 dollars per CBM.|拼箱运价是每方40美元。
-W/M|/ˈdʌbəljuː ɛm/|n.|重量或体积择大计费（Weight or Measurement）|LCL is charged by W/M, one ton or one CBM.|拼箱按重量或体积择大计费，一吨或一方。
-ocean freight|/ˈoʊʃn freɪt/|n.|海运费|Ocean freight went up again this week.|这周海运费又涨了。
-all-in rate|/ˌɔːl ˈɪn reɪt/|n.|全包价|Please quote an all-in rate to Muscat.|请报到马斯喀特的全包价。
-local charges|/ˈloʊkl ˈtʃɑːrdʒɪz/|n.|本地费用（港杂费）|Local charges at origin are about 300 dollars.|起运港本地费用大约300美元。
-documentation fee|/ˌdɑːkjəmɛnˈteɪʃn fiː/|n.|文件费|The documentation fee is 50 dollars per B/L.|每份提单文件费50美元。
-customs clearance fee|/ˈkʌstəmz ˈklɪrəns fiː/|n.|清关费|The customs clearance fee is not included.|清关费不包含在内。
-trucking|/ˈtrʌkɪŋ/|n.|拖车；陆运|Trucking from factory to port is 200 dollars.|工厂到港口的拖车费是200美元。
-last mile|/læst maɪl/|n.|尾程派送（最后一公里）|Our partner handles the last mile in Oman.|我们的合作方负责阿曼的尾程派送。
-first mile|/fɜːrst maɪl/|n.|头程|First mile is from your factory to our warehouse.|头程是从你的工厂到我们的仓库。
-storage fee|/ˈstɔːrɪdʒ fiː/|n.|仓储费|Storage fee starts after 7 free days.|7天免费期后开始收仓储费。
-peak season|/piːk ˈsiːzn/|n.|旺季|Rates are higher in peak season.|旺季价格更高。
-GRI|/ˌdʒiː ɑːr ˈaɪ/|n.|全面涨价附加费（General Rate Increase）|The carrier announced a GRI for December.|船公司宣布了12月的全面涨价。
-PSS|/ˌpiː ɛs ˈɛs/|n.|旺季附加费（海运，Peak Season Surcharge）|PSS is 300 dollars per container.|海运旺季附加费每柜300美元。
-validity|/vəˈlɪdəti/|n.|有效期|This quote has validity until the end of the month.|这个报价有效期到月底。
-valid|/ˈvælɪd/|adj.|有效的|This rate is valid for two weeks.|这个价格两周内有效。
-freight prepaid|/freɪt ˌpriːˈpeɪd/|phr.|运费预付|The B/L shows freight prepaid.|提单上显示运费预付。
-freight collect|/freɪt kəˈlɛkt/|phr.|运费到付|Can we ship it freight collect?|这票能做运费到付吗？
-prepaid|/ˌpriːˈpeɪd/|adj.|预付的|All charges are prepaid by the shipper.|所有费用由发货人预付。
-collect|/kəˈlɛkt/|adj.|到付的|Destination charges are collect.|目的港费用到付。
-bill to third party|/bɪl tə θɜːrd ˈpɑːrti/|phr.|第三方付款|We can bill to third party with your account.|我们可以用你的账号做第三方付款。
-DDU|/ˌdiː diː ˈjuː/|n.|未完税交货（Delivered Duty Unpaid）|With DDU, the receiver pays duty.|DDU方式由收件人付关税。
-CIP|/ˌsiː aɪ ˈpiː/|n.|运费和保险费付至（Carriage and Insurance Paid To）|Under CIP, the seller buys insurance.|按CIP条款，卖方买保险。
-CPT|/ˌsiː piː ˈtiː/|n.|运费付至（Carriage Paid To）|CPT is like CFR, but for any transport.|CPT类似CFR，但适用于任何运输方式。
-risk transfer|/rɪsk ˈtrænsfɜːr/|n.|风险转移|Under FOB, risk transfers when goods are on board.|按FOB条款，货物装船后风险转移。
-on board|/ɑːn bɔːrd/|phr.|已装船|The goods are on board, B/L will be ready soon.|货已装船，提单很快出来。
-shipped on board|/ʃɪpt ɑːn bɔːrd/|phr.|已装船（提单批注）|The bank needs a shipped on board B/L.|银行需要已装船提单。
-clean B/L|/kliːn ˌbiː ˈɛl/|n.|清洁提单|We need a clean B/L for the L/C.|信用证要求清洁提单。
-L/C|/ˌɛl ˈsiː/|n.|信用证（Letter of Credit）|The documents must match the L/C exactly.|单据必须和信用证完全一致。
-surrender|/səˈrɛndər/|v.|交回（正本提单）；电放|Please surrender the original B/L at origin.|请在起运港交回正本提单。
-express release|/ɪkˈsprɛs rɪˈliːs/|n.|电放（无正本提单放货）|The carrier confirmed express release.|船公司确认已电放。
-amendment|/əˈmɛndmənt/|n.|更改；改单|B/L amendment costs 50 dollars.|提单改单费50美元。
-shipping marks|/ˈʃɪpɪŋ mɑːrks/|n.|唛头|Please print shipping marks on every carton.|请在每个箱子上印唛头。
-description of goods|/dɪˈskrɪpʃn əv ɡʊdz/|n.|品名；货物描述|The description of goods is too general.|品名写得太笼统了。
-commodity|/kəˈmɑːdəti/|n.|货物；商品（品名）|What commodity are you shipping?|你们发的是什么货？
-net weight|/nɛt weɪt/|n.|净重|Net weight is 18 kilograms per carton.|每箱净重18公斤。
-measurement|/ˈmɛʒərmənt/|n.|尺寸；体积|Please send the measurement of each carton.|请发一下每箱的尺寸。
-pieces|/ˈpiːsɪz/|n.|件数|Total pieces: 120 cartons.|总件数：120箱。
-fumigation|/ˌfjuːmɪˈɡeɪʃn/|n.|熏蒸|Wooden pallets need fumigation.|木托盘需要熏蒸。
-fumigation certificate|/ˌfjuːmɪˈɡeɪʃn sərˈtɪfɪkət/|n.|熏蒸证书|Customs asked for the fumigation certificate.|海关要熏蒸证书。
-ISPM 15|/ˌaɪ ɛs ˌpiː ɛm fɪfˈtiːn/|n.|国际木质包装检疫标准（IPPC标识）|Wooden cases must have the ISPM 15 mark.|木箱必须有IPPC熏蒸标识。
-legalization|/ˌliːɡələˈzeɪʃn/|n.|认证（使馆认证）|Some GCC buyers need invoice legalization.|有些海湾客户需要发票认证。
-attestation|/ˌætɛˈsteɪʃn/|n.|认证；证明（使馆加签）|The embassy attestation takes one week.|使馆认证需要一周。
-chamber of commerce|/ˈtʃeɪmbər əv ˈkɑːmɜːrs/|n.|商会（贸促会）|The CO is issued by the chamber of commerce.|原产地证由贸促会签发。
-export license|/ˈɛkspɔːrt ˈlaɪsns/|n.|出口许可证|Do these goods need an export license?|这些货需要出口许可证吗？
-import permit|/ˈɪmpɔːrt ˈpɜːrmɪt/|n.|进口许可|Medical items need an import permit in Oman.|医疗产品进口阿曼需要进口许可。
-conformity certificate|/kənˈfɔːrməti sərˈtɪfɪkət/|n.|符合性证书（COC）|Some products need a conformity certificate.|部分产品需要符合性证书。
-Bayan|/ˈbaɪæn/|n.|Bayan系统（阿曼海关电子申报系统）|Our broker files the declaration in Bayan.|我们的报关行在Bayan系统申报。
-customs code|/ˈkʌstəmz koʊd/|n.|海关编码；进出口商代码|The consignee needs a customs code to import.|收货人进口需要海关编码。
-tariff|/ˈtærɪf/|n.|关税税则；税率|Check the tariff for this HS code.|查一下这个编码的税率。
-duty free|/ˈduːti friː/|adj.|免税的|Samples under 100 dollars may be duty free.|100美元以下的样品可能免税。
-duty paid|/ˈduːti peɪd/|adj.|完税的|The goods arrive duty paid.|货物到达时已完税。
-tax inclusive|/tæks ɪnˈkluːsɪv/|adj.|含税的|Is this price tax inclusive?|这个价格含税吗？
-double clearance|/ˈdʌbl ˈklɪrəns/|n.|双清（起运地和目的地都清关）|Our DDP service is double clearance and door delivery.|我们的DDP服务是双清包派送。
-customs value|/ˈkʌstəmz ˈvæljuː/|n.|完税价格|Customs value includes freight and insurance.|完税价格包括运费和保险。
-assessment|/əˈsɛsmənt/|n.|（海关）估价；核定|Customs reassessed the value higher.|海关把货值估高了。
-penalty|/ˈpɛnəlti/|n.|罚款|Wrong declaration can lead to a penalty.|申报错误会被罚款。
-seized|/siːzd/|adj.|被没收的；被查扣的|Fake brand goods may be seized.|假冒品牌货可能会被没收。
-brand goods|/brænd ɡʊdz/|n.|品牌货（敏感品牌）|We cannot ship brand goods without authorization.|没有授权的品牌货我们不能发。
-inbound|/ˈɪnbaʊnd/|adj.|入库的；进口的|We received 50 cartons inbound today.|我们今天入库了50箱。
-outbound|/ˈaʊtbaʊnd/|adj.|出库的；出口的|Outbound shipments leave every afternoon.|出库货每天下午发出。
-labeling|/ˈleɪbəlɪŋ/|n.|贴标|Labeling is 0.2 dollars per carton.|贴标每箱0.2美元。
-palletizing|/ˈpælətaɪzɪŋ/|n.|打托|Palletizing protects the goods in air freight.|打托能在空运中保护货物。
-shrink wrap|/ʃrɪŋk ræp/|n.|缠绕膜|Please shrink wrap each pallet.|请给每个托盘打缠绕膜。
-repacking|/ˌriːˈpækɪŋ/|n.|重新包装（换箱）|The carton is broken and needs repacking.|箱子破了，需要重新包装。
-reinforce|/ˌriːɪnˈfɔːrs/|v.|加固|We will reinforce the box with tape.|我们会用胶带加固箱子。
-wooden crate|/ˈwʊdn kreɪt/|n.|木箱；木架|Glass should be packed in a wooden crate.|玻璃要用木箱包装。
-receiving|/rɪˈsiːvɪŋ/|n.|收货（仓库签收）|Our warehouse receiving hours are 9 to 6.|我们仓库收货时间是9点到6点。
-warehouse receipt|/ˈwɛrhaʊs rɪˈsiːt/|n.|进仓单；入仓回执|Please show the warehouse receipt.|请出示进仓单。
-inventory|/ˈɪnvəntɔːri/|n.|库存|Please check the inventory in the system.|请在系统里查一下库存。
-sorting|/ˈsɔːrtɪŋ/|n.|分拣|Sorting is done at the hub at night.|分拣在晚上的转运中心完成。
-hub|/hʌb/|n.|转运中心；枢纽|The DHL hub in Hong Kong is very busy.|DHL香港转运中心很忙。
-gateway|/ˈɡeɪtweɪ/|n.|口岸；出口转运点|The parcel left the export gateway.|包裹已离开出口口岸。
-consolidate|/kənˈsɑːlɪdeɪt/|v.|集货；合并|We can consolidate your orders into one shipment.|我们可以把你的订单合成一票走。
-split|/splɪt/|v.|分票；拆分|Can we split this shipment into two?|这票货能分成两票吗？
-TMS|/ˌtiː ɛm ˈɛs/|n.|运输管理系统（Transport Management System）|I created the order in our TMS.|我在TMS系统里建了单。
-order number|/ˈɔːrdər ˈnʌmbər/|n.|订单号；单号|Please give me the order number.|请给我单号。
-reference number|/ˈrɛfrəns ˈnʌmbər/|n.|参考号；客户单号|Put your reference number on the label.|把你的参考号写在面单上。
-channel|/ˈtʃænl/|n.|渠道（物流产品线路）|This channel is cheaper but slower.|这个渠道更便宜但更慢。
-dedicated line|/ˈdɛdɪkeɪtɪd laɪn/|n.|专线|We have a dedicated line to the Middle East.|我们有中东专线。
-cost price|/kɔːst praɪs/|n.|成本价|Our cost price from the agent is 4 dollars.|我们从代理拿的成本价是4美元。
-markup|/ˈmɑːrkʌp/|n.|加价|We add a small markup on the agent rate.|我们在代理价上加一点价。
-reconciliation|/ˌrɛkənˌsɪliˈeɪʃn/|n.|对账|Please send the bill for monthly reconciliation.|请发账单过来做月度对账。
-statement|/ˈsteɪtmənt/|n.|账单；对账单|The supplier sent this month's statement.|供应商发来了本月对账单。
-debit note|/ˈdɛbɪt noʊt/|n.|借项通知（费用账单）|We will send a debit note for the extra fees.|额外费用我们会发账单。
-air freight rate|/ɛr freɪt reɪt/|n.|空运价|The air freight rate to Muscat is 3 dollars per kilogram.|到马斯喀特的空运价是每公斤3美元。
-flight|/flaɪt/|n.|航班|The cargo is booked on tomorrow's flight.|货已订了明天的航班。
-offload|/ˈɔːfloʊd/|v.|（航班）拉货；卸下|The airline offloaded our cargo, no space.|航空公司没舱位，把我们的货拉下来了。
-direct flight|/dəˈrɛkt flaɪt/|n.|直飞航班|Is there a direct flight to Muscat?|有直飞马斯喀特的航班吗？
-airport to airport|/ˈɛrpɔːrt tə ˈɛrpɔːrt/|phr.|机场到机场|The price is airport to airport only.|这个价只是机场到机场。
-port to port|/pɔːrt tə pɔːrt/|phr.|港到港|This is a port to port quote.|这是港到港报价。
-cargo ready date|/ˈkɑːrɡoʊ ˈrɛdi deɪt/|n.|货好时间|What is the cargo ready date?|货什么时候好？
-reefer container|/ˈriːfər kənˈteɪnər/|n.|冷藏集装箱|Reefer containers need power at the port.|冷藏柜在港口需要插电。
-temperature|/ˈtɛmprətʃər/|n.|温度|Set the reefer temperature at minus 18.|冷藏柜温度设为零下18度。
-break bulk|/breɪk bʌlk/|n.|散杂货|Big machines can ship as break bulk.|大型机器可以走散杂货。
-out of gauge|/aʊt əv ɡeɪdʒ/|phr.|超限的（超尺寸货，OOG）|This cargo is out of gauge.|这批货是超限货。
-truck|/trʌk/|n.|卡车|The truck will arrive at 9 a.m.|卡车上午9点到。
-FTL|/ˌɛf tiː ˈɛl/|n.|整车运输（Full Truckload）|We booked an FTL from Muscat to Salalah.|我们订了马斯喀特到塞拉莱的整车。
-cross-border|/ˌkrɔːs ˈbɔːrdər/|adj.|跨境的|Cross-border trucking from Dubai to Oman takes two days.|迪拜到阿曼的跨境卡车需要两天。
-on time delivery|/ɑːn taɪm dɪˈlɪvəri/|n.|准时派送（准时率）|Our on time delivery rate is 95 percent.|我们的准时派送率是95%。
-pickup request|/ˈpɪkʌp rɪˈkwɛst/|n.|取件预约|I submitted a pickup request on the UPS website.|我在UPS官网提交了取件预约。
-drop off|/drɑːp ɔːf/|v.|送货到网点（自送）|You can drop off the parcel at our warehouse.|你可以把包裹自送到我们仓库。
-service point|/ˈsɜːrvɪs pɔɪnt/|n.|服务网点；自提点|The parcel is waiting at the service point.|包裹在自提点等待领取。
-COD|/ˌsiː oʊ ˈdiː/|n.|货到付款（Cash on Delivery）|Do you offer COD in Oman?|你们在阿曼提供货到付款吗？
-priority|/praɪˈɔːrəti/|n.|优先（快速）服务|FedEx Priority is faster than Economy.|FedEx优先型比经济型更快。
-economy|/ɪˈkɑːnəmi/|n.|经济型服务|Economy service takes 5 to 8 days.|经济型服务需要5到8天。
-express saver|/ɪkˈsprɛs ˈseɪvər/|n.|UPS红单（Express Saver）|UPS Express Saver is the red label service.|UPS Express Saver就是红单服务。
-expedited|/ˈɛkspədaɪtɪd/|adj.|加快的（UPS蓝单）|UPS Expedited is cheaper than Saver.|UPS蓝单比红单便宜。
-document shipment|/ˈdɑːkjəmənt ˈʃɪpmənt/|n.|文件件|Document shipments have a lower rate.|文件件价格更低。
-non-document|/ˌnɑːn ˈdɑːkjəmənt/|n.|包裹件（非文件）|Samples are sent as non-document.|样品按包裹件寄。
-delivery area surcharge|/dɪˈlɪvəri ˈɛriə ˈsɜːrtʃɑːrdʒ/|n.|偏远地区派送附加费|FedEx calls it delivery area surcharge.|FedEx把它叫作偏远派送附加费。
-residential surcharge|/ˌrɛzɪˈdɛnʃl ˈsɜːrtʃɑːrdʒ/|n.|住宅地址附加费|Home addresses have a residential surcharge.|住宅地址有住宅附加费。
-duty tax forwarding|/ˈduːti tæks ˈfɔːrwərdɪŋ/|n.|关税代垫手续费|DHL charges duty tax forwarding on DDP shipments.|DHL对DDP货收取关税代垫费。
-bonded warehouse|/ˈbɑːndɪd ˈwɛrhaʊs/|n.|保税仓|The goods are stored in a bonded warehouse.|货存放在保税仓。
-free zone|/friː zoʊn/|n.|自由贸易区|Sohar Free Zone has lower taxes.|苏哈尔自由区税费更低。
-re-export|/ˌriːˈɛkspɔːrt/|n.|转口；再出口|We re-export from Dubai to Oman.|我们从迪拜转口到阿曼。
-cargo insurance|/ˈkɑːrɡoʊ ɪnˈʃʊrəns/|n.|货运险|Cargo insurance is 0.3 percent of value.|货运险是货值的0.3%。
-blank sailing|/blæŋk ˈseɪlɪŋ/|n.|停航；跳班|There is a blank sailing next week.|下周有一班停航。
-rollover|/ˈroʊloʊvər/|n.|甩柜（被甩到下一班船）|Our container had a rollover to the next vessel.|我们的柜子被甩到下一班船了。
-port congestion|/pɔːrt kənˈdʒɛstʃən/|n.|港口拥堵|Port congestion causes long delays.|港口拥堵导致严重延误。
-empty container|/ˈɛmpti kənˈteɪnər/|n.|空柜|Return the empty container to the depot.|把空柜还到堆场。
-depot|/ˈdiːpoʊ/|n.|堆场；场站|Pick up the empty container from the depot.|从堆场提空柜。
-`;
 
 ;
 // 每日计划：按日期生成当天时间表，打勾和日志存在本机 localStorage
@@ -3023,65 +1892,33 @@ const ymd = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.get
 const parse = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
 const weekOf = d => 11 + Math.floor((d - new Date(2026, 10, 16)) / (7 * MS));
 const WD = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-const ICON = {wake: '⏰', run: '🏃‍♀️', gym: '🏋️‍♀️', meal: '🍽️', cls: '🎓', biz: '💼', eng: '🗣️', gram: '📘', ai: '🤖', hl: '🖥️', read: '📖', go: '🚕', back: '🚇', rest: '😴', review: '✅', school: '📚', news: '📰', meet: '👨‍👩‍👧', free: '🌿', prep: '🎒', word: '🔤', wrev: '🔁', listen: '🎧'};
+const ICON = {wake: '⏰', run: '🏃‍♀️', gym: '🏋️‍♀️', meal: '🍽️', cls: '🎓', biz: '🛍️', gram: '📘', read: '📖', go: '🚕', back: '🚇', rest: '😴', review: '✅', school: '📚', meet: '👨‍👩‍👧', free: '🌿', word: '🔤', wrev: '🔁', listen: '🎧', drone: '🚁', exam: '📝', makeup: '💄'};
 
-// 语法课分配：周一到周五 1 课，周六 2 课，周日复习
-// 单词分配：四个词库按比例交错，平均分到周一到周六（约 30 个/天），周日复习本周的
-const WCAT = {core: '核心', daily: '日常', biz: '商务', logi: '物流'};
-const WORDS = (function () {
-  const src = {core: WORDS_RAW, daily: WORDS_DAILY, biz: WORDS_BIZ, logi: WORDS_LOGI}, seen = {}, all = [];
-  Object.keys(src).forEach(c => {
-    const a = src[c].trim().split('\n').map(l => l.split('|')).filter(a => a.length === 6 && !seen[a[0].toLowerCase()] && (seen[a[0].toLowerCase()] = 1));
-    a.forEach((x, i) => all.push({w: x[0], ph: x[1], pos: x[2], zh: x[3], ex: x[4], exz: x[5], cat: c, o: (i + 0.5) / a.length}));
-  });
-  return all.sort((a, b) => a.o - b.o);
-})();
-const GRAM = {}, WDAY = {}, LDAYS = [];
+// 语法课分配：从 GRAM_FROM 起，周一到周五 1 课，周六 2 课，周日复习
+const GRAM = {};
 (function () {
-  let i = 0, j = 0, wk = [], nd = 0;
-  for (let d = parse(PLAN_START); d <= parse(PLAN_END); d = new Date(d.getTime() + MS)) if (d.getDay() !== 0 || ymd(d) === PLAN_START) nd++;
-  const per = Math.ceil(WORDS.length / nd);
-  for (let d = parse(PLAN_START); d <= parse(PLAN_END); d = new Date(d.getTime() + MS)) {
-    const k = ymd(d), dow = (d.getDay() + 6) % 7, n = dow === 6 ? 0 : dow === 5 ? 2 : 1, a = [];
+  let i = 0;
+  for (let d = parse(GRAM_FROM); d <= parse(PLAN_END); d = new Date(d.getTime() + MS)) {
+    const dow = (d.getDay() + 6) % 7, n = dow === 6 ? 0 : dow === 5 ? 2 : 1, a = [];
     for (let x = 0; x < n && i < LESSONS.length; x++) a.push(i++);
-    GRAM[k] = a;
-    if (dow === 6 && k !== PLAN_START) { WDAY[k] = wk; wk = []; continue; }
-    const w = [];
-    for (let x = 0; x < per && j < WORDS.length; x++) w.push(j++);
-    WDAY[k] = w; wk = wk.concat(w); LDAYS.push(k);
+    GRAM[ymd(d)] = a;
   }
 })();
-const isReview = k => (parse(k).getDay() === 0 && k !== PLAN_START);
-// 间隔复习：前 1 个学习日 + 前 3 个学习日的词
-const revSet = k => { const p = LDAYS.filter(x => x < k); return [p[p.length - 1], p[p.length - 3]].filter(Boolean).reduce((a, x) => a.concat(WDAY[x]), []); };
-const catCount = a => Object.keys(WCAT).map(c => [WCAT[c], a.filter(i => WORDS[i].cat === c).length]).filter(x => x[1]).map(x => x[0] + ' ' + x[1]).join(' · ');
 const addMin = (t, m) => { const [h, mm] = t.split(':').map(Number), x = h * 60 + mm + m; return pad(Math.floor(x / 60)) + ':' + pad(x % 60); };
-function wordCard(i) {
-  const w = WORDS[i];
-  return '<div class="wd"><button class="play" data-say="' + esc(w.w) + '">🔊</button><div>' +
-    '<div><b class="en">' + esc(w.w) + '</b> <span class="ph">' + w.ph + '</span> <i class="pos">' + w.pos + '</i> <span class="tip">' + WCAT[w.cat] + '</span></div>' +
-    '<div class="wzh">' + w.zh + '</div>' +
-    '<div class="wex"><button class="say2" data-say="' + esc(w.ex) + '">▶</button> ' + esc(w.ex) + '<br><span>' + w.exz + '</span></div></div></div>';
-}
-function wordQuiz(a) {
-  return a.map(i => {
-    const w = WORDS[i], o = [i];
-    while (o.length < 4 && o.length < WORDS.length) { const r = Math.floor(Math.random() * WORDS.length); if (!o.includes(r)) o.push(r); }
-    o.sort(() => Math.random() - 0.5);
-    return '<div class="q" data-why="' + esc(w.w + ' ' + w.ph + '：' + w.zh) + '" data-en="' + esc(w.w) + '"><div>📝「' + w.zh + '」的英文是？</div>' +
-      o.map(x => '<button class="opt" data-ok="' + (x === i ? 1 : 0) + '">' + esc(WORDS[x].w) + '</button>').join('') + '<div class="fb"></div></div>';
-  }).join('');
-}
+const dayDiff = (a, b) => Math.round((parse(b) - parse(a)) / MS);
 
-const NEWS = [
-  ['Times of Oman 商业版', 'timesofoman.com 的 Business 栏目，看 1 条和贸易、港口、建材、零售有关的新闻，用一句中文记下来。'],
-  ['中国驻阿曼使馆经商处', 'om.mofcom.gov.cn 看最新动态，留意政策、展会、中资企业消息。'],
-  ['Oman Observer 商业新闻', 'omanobserver.om 的 Business 栏目，看 1 条。'],
-  ['快递燃油附加费', 'UPS、DHL、FedEx 官网公布的燃油附加费率，记下本周的数字。小货代每次调价都要用；你交付报价表时，要写清楚用的是哪天的费率（新手册 3.6）。'],
-  SCFI,
-  ['Muscat Daily 商业新闻', 'muscatdaily.com，看 1 条。'],
-  ['本周回顾', '把这周看到最有用的 1 条信息发到家庭群。']
-];
+// 无人机：第一遍 11/24～12/2 平分题库；12/3 起模拟考 + 错题
+const drOn = k => k >= DRONE.start && k <= DRONE.end;
+const drTotal = () => S.get('drTotal', DRONE.total);
+function droneTask(k) {
+  const tot = drTotal(), N = dayDiff(DRONE.start, DRONE.pass1) + 1, n = dayDiff(DRONE.start, k) + 1, left = dayDiff(k, DRONE.exam);
+  if (k <= DRONE.pass1) {
+    const from = Math.round(tot * (n - 1) / N) + 1, to = Math.round(tot * n / N);
+    return {t: '第 ' + from + '～' + to + ' 题', d: '<p class="tip">第一遍第 ' + n + '/' + N + ' 天。今天约 ' + (to - from + 1) + ' 题，分在几个刷题块里，接着上一块刷，刷到第 ' + to + ' 题为止。</p>'};
+  }
+  const sets = k === DRONE.end ? 1 : left === 2 ? 3 : 2;
+  return {t: '模拟考 ' + sets + ' 套 + 错题', d: '<p>' + DRONE_PHASE2 + '</p>' + (k === DRONE.end ? '<p class="tip">考前一天：只做 1 套找手感，剩下时间看错题那一页。准备身份证、准考证（或考试通知），查好考点路线，今晚早睡。</p>' : '')};
+}
 
 function gymDetail(code) {
   const w = WORKOUTS[code];
@@ -3098,9 +1935,8 @@ function buildDay(date) {
   const runMin = Math.max(15, (RUN_WEEK[wk] || 25) - (g === 'A' || g === 'D' ? 5 : 0));
   const L = [];
   const add = (s, e, c, t, d) => L.push({s, e, c, t, d: d || ''});
-  const stage = STAGE[wk] || {};
   const biz = (BIZ[wk] || {})[dow];
-  const exam = wk >= 15;
+  const exam = wk >= 15, dr = drOn(key);
 
   const wake = (s, e) => add(s, e, 'wake', '起床，喝一杯温水', dow === 6 ? '空腹称体重，写进下面的"日志"。' : '');
   const run = (s, e, place, min) => add(s, e, 'run', '跑步 ' + (min || runMin) + ' 分钟（' + place + '）',
@@ -3112,98 +1948,64 @@ function buildDay(date) {
   };
   const klass = c => add(c.s, c.e, 'cls', c.n, c.r);
   const gym = (s, e) => g && add(s, e, 'gym', '健身房：' + WORKOUTS[g].name, gymDetail(g));
-  const bizItem = (s, e, where) => biz ? add(s, e, 'biz', biz[0], (where ? '<p class="tip">' + where + '</p>' : '') + biz[1]) :
-    add(s, e, 'biz', '业务：跟进本周任务', '把这周没做完的任务往前推一步，结果填进表格。本周目标见上方。');
-  const biz2 = (s, e) => add(s, e, 'biz', '业务：跟进和整理', '回复小货代客户、实习公司的消息；把今天的收入和用时填进收入表；家里收尾有要你查的事，做一件。');
-  const eng = (s, e, where) => {
-    const E = ENG[wk] || ENG[11], p = (wk === 11 && dow >= 3 && E[2]) ? E[2] : E[0];
-    add(s, e, 'eng', '英语开口练习（4 步）' + (where ? '：' + where : ''),
-      '<ol><li>复习句子本 5 分钟：大声读昨天记下的句子，每句 3 遍。</li>' +
-      '<li>跟读 10 分钟：桌面《广交会采访话术（新版）》点 🔊，本周读' + E[1] + '。先慢速。</li>' +
-      '<li>AI 语音对话 15～30 分钟（提示词 ' + p + '）：' + PROMPTS[p] + '<br>完整提示词在电脑桌面《开口练习计划》第 6 章，复制到手机备忘录里用。</li>' +
-      '<li>记句子本 5 分钟：今天说不出来的、AI 纠正过的句子，写进下面"日志"。</li></ol>' +
-      '<p class="tip">本周开口等级：' + (stage.level || '') + '。过关标准见《开口练习计划》第 3 章。</p>');
+  const bizItem = (s, e, where) => biz ? add(s, e, 'biz', '独立站：' + biz[0], (where ? '<p class="tip">' + where + '</p>' : '') + biz[1]) :
+    add(s, e, 'biz', '独立站：跟进本周任务', '把这周没做完的任务往前推一步。本周目标见上方。');
+  const biz2 = (s, e) => add(s, e, 'biz', '独立站：跟进和记账', '回复收款机构、代账、工厂的消息；花出去的每一笔钱记进总表（计划书 10.3），发票和付款截图存进对应文件夹（10.5）。');
+  // 无人机刷题块；考完以后这些时间段换成期末复习或独立站
+  const drone = (s, e, kind, where) => {
+    if (!dr) return kind === 'main' ? school(s, e) : kind === 'second' ? biz2(s, e) : null;
+    const x = droneTask(key), w = where ? '<p class="tip">' + where + '</p>' : '';
+    if (kind === 'wrong') return add(s, e, 'drone', '无人机：今天的错题再做一遍', w + '<p>打开错题本，今天错的全部重做。连续答对 2 次的移出错题本。</p>');
+    add(s, e, 'drone', '无人机：' + x.t, w + x.d + '<ul>' + DRONE_TIPS.map(t => '<li>' + t + '</li>').join('') + '</ul>' +
+      '<label class="drt">题库总题数（按你的 App 改，改完每天的题号会重算）<input inputmode="numeric" data-drtotal value="' + drTotal() + '"></label>');
   };
-  const words = (s, e, where) => {
-    const wa = WDAY[key] || [], rv = isReview(key);
-    if (!wa.length) return;
-    add(s, e, 'word', (rv ? '单词：复习本周 ' + wa.length + ' 个' : '单词：新学 ' + wa.length + ' 个') + '（' + catCount(wa) + '）',
-      (where ? '<p class="tip">' + where + '</p>' : '') +
-      '<p class="tip">' + (rv ? '先把下面的小测验全部做完，错的词再看卡片，读 5 遍。' : '10 个一组：点 🔊 听 3 遍并跟读 → 点 ▶ 读例句 → 遮住中文说意思。三组做完再做小测验，错的回去重读。') + '</p>' +
-      (rv ? wordQuiz(wa) + wa.map(wordCard).join('') : wa.map(wordCard).join('') + wordQuiz(wa)));
-  };
-  const wrev = (s, e) => {
-    const r = revSet(key);
-    if (r.length) add(s, e, 'wrev', '单词复习：前几天的 ' + r.length + ' 个', '<p class="tip">间隔复习：昨天和 3 天前学的词。做小测验，错的大声读 3 遍。</p>' + wordQuiz(r));
-  };
-  const wnight = (s, e) => {
-    const wa = WDAY[key] || [];
-    if (wa.length && !isReview(key)) add(s, e, 'wrev', '睡前自测：今天的 ' + wa.length + ' 个词', '<p class="tip">睡前再过一遍，第二天记得牢。只做题，不用看卡片。</p>' + wordQuiz(wa));
-  };
+  const wapp = (s, e, where) => add(s, e, 'word', dow === 6 ? '背单词：只复习，不学新词（' + WAPP.app + '）' : '背单词：复习 + ' + WAPP.perDay + ' 个新词（' + WAPP.app + '）',
+    (where ? '<p class="tip">' + where + '</p>' : '') + '<ol>' + WAPP.review.slice(0, 3).map(x => '<li>' + x + '</li>').join('') + '</ol><p class="tip">选哪本词书、怎么加强记忆，见底部“英语”页。</p>');
+  const wnight = (s, e) => add(s, e, 'wrev', '睡前 10 分钟：今天的单词再过一遍', '在 App 里把今天学的词只看英文说中文，说不出的标记，明天早上先复习它们。');
   const gram = (s, e) => {
     const a = GRAM[key] || [];
-    if (!a.length) return add(s, e, 'gram', '语法：复习本周的课', '打开"语法"页，把本周打了勾的课的小测验再做一遍，错的抄进笔记本。', true);
+    if (!a.length) return add(s, e, 'gram', '语法：复习本周的课', '打开"语法"页，把本周打了勾的课的小测验再做一遍，错的抄进笔记本。');
     add(s, e, 'gram', '语法：' + a.map(i => LESSONS[i].title).join('；'),
-      a.map(i => '<button class="open" data-l="' + i + '">打开 ' + LESSONS[i].title + '</button>').join('') +
+      a.map(i => '<button class="lopen" data-l="' + i + '">打开 ' + LESSONS[i].title + '</button>').join('') +
       '<p>读完课文，点 ▶ 听例句并跟读，做完小测验，抄"✍️ 抄到笔记本"那一框。</p>');
   };
-  const ai = (s, e) => {
-    const A = AI[wk];
-    if (!A || dow > 4) return false;
-    add(s, e, 'ai', 'AI 学习（本周主题：' + A[0] + '）', A[1][dow] + '<p class="tip">用你常用的 AI（豆包、Kimi、ChatGPT、Claude 等）。好用的提示词存进备忘录"提示词库"。</p>');
-    return true;
-  };
-  const hl = (s, e) => {
-    const h = dow === 0 ? HL_MON[wk] : dow === 2 ? HL_WED : dow === 4 ? HL_FRI[wk] : null;
-    if (!h) return false;
-    add(s, e, 'hl', '每周固定：' + h[0], h[1] + '<p class="tip">签字、花钱、对外承诺由家人决定，你帮忙查资料和做表，不签字（新手册 2.8）。华磊里只导出，不改不删。</p>');
-    return true;
-  };
-  const news = (s, e) => { const n = NEWS[dow]; add(s, e, 'news', '行业资讯 10 分钟：' + n[0], n[1]); };
   const school = (s, e) => {
     const t = cls.map(c => c.n).filter((v, i, a) => a.indexOf(v) === i);
     add(s, e, 'school', exam ? '期末复习' : '学业：作业和复习',
-      exam ? '按 AI 做的复习提纲复习一门课，做 10 道自测题。期末日期出来后告诉 Claude，把考试周的任务再调轻。' :
-        (t.length ? '整理今天 ' + t.join('、') + ' 的笔记，先做有截止日期的作业。' : '挑本周一门课做作业或课后题。毕业只要不挂科，但作业别拖到考试周。'));
+      exam ? '让 AI 根据课件给一门课做一页复习提纲，按提纲复习，再做 10 道自测题。期末日期出来后告诉 Claude，把考试周再调轻。' :
+        (t.length ? '整理今天 ' + t.join('、') + ' 的笔记，先做有截止日期的作业。' : '挑本周一门课做作业或课后题。作业别拖到考试周。'));
   };
   const notes = (s, e) => add(s, e, 'school', '课后 15 分钟整理笔记', '趁刚下课，把老师强调的考点和作业要求记下来。');
-  const read = (s, e, where) => { const r = READ[wk] || READ[11]; add(s, e, 'read', '阅读' + (where ? '（' + where + '）' : '') + '：' + r[0], r[1]); };
+  const read = (s, e, where) => { const r = READ[wk] || READ[12]; add(s, e, 'read', '阅读' + (where ? '（' + where + '）' : '') + '：' + r[0], r[1]); };
   const review = (s, e) => add(s, e, 'review', '今日复盘 10 分钟', '把今天的任务打勾；没做完的想一下原因，写进日志的"一句话复盘"。明天最重要的一件事是什么，也写一句。');
   const sleep = s => add(s, '', 'rest', '洗漱，放下手机，' + s + ' 前睡着', '睡够 7 小时以上。睡前 30 分钟不刷手机，可以看纸质书。');
-  const go = (s, e) => { const r = revSet(key); add(s, e, 'go', '打车去学校（车上复习单词）',
-    '<p>车上做：① 单词复习 20 分钟（昨天和 3 天前学的' + r.length + ' 个词，题在下面）；② 行业资讯 10 分钟（' + NEWS[dow][0] + '：' + NEWS[dow][1] + '）；③ 听《广交会采访话术》的跟读音频。晕车就闭眼听。</p>' + wordQuiz(r)); };
-  const back = (s, e, extra) => add(s, e, 'back', '坐地铁回家（30～90 分钟）', '地铁上：阅读 30 分钟（' + (READ[wk] || READ[11])[0] + '），剩下的时间做英语听力（BBC Learning English 的 6 Minute English 或 English at Work，戴耳机听，小声跟读）。' + (extra || ''));
-  const listen = (s, e) => add(s, e, 'listen', '英语听力 + 影子跟读',
-    '<ol><li>材料：BBC Learning English 的 English at Work（办公室和商务情景）或 6 Minute English；每次 1 集。</li>' +
-    '<li>第 1 遍只听，抓大意；第 2 遍看字幕，查不认识的词；第 3 遍跟着音频同步说（影子跟读），模仿语调。</li>' +
-    '<li>挑 3 个有用的句子写进日志的"句子本"。</li></ol>');
+  const go = (s, e) => add(s, e, 'go', dr ? '打车去学校（车上刷无人机题）' : '打车去学校',
+    dr ? '不晕车就用手机接着刷题库，算进今天的题数；晕车就闭眼休息，别硬刷。' : '车上闭眼休息，或看 15 分钟阅读的书。');
+  const back = (s, e, extra) => add(s, e, 'back', '坐地铁回家（30～90 分钟）', (dr ? '地铁上先刷 30 分钟无人机错题，剩下的时间' : '地铁上') +
+    '阅读（' + (READ[wk] || READ[12])[0] + '），或者听英语听力（BBC Learning English 的 6 Minute English，戴耳机听）。' + (extra || ''));
+  const makeup = (s, e) => { const m = MAKEUP[wk] || MAKEUP[16]; add(s, e, 'makeup', '化妆练习：' + m[0], '<p>' + m[1] + '</p><p class="tip">' + MAKEUP_TIP + '</p>'); };
 
-  // 第一天：开始前的准备
-  if (key === PLAN_START) {
-    wake('07:30', '07:40');
-    run('07:45', '08:10', '小区或附近公园，轻松跑', 20);
-    meal('08:20', '08:50', 'b');
-    add('09:00', '10:30', 'prep', '开始前的准备（只做一次）',
-      '<ol><li>把这个页面添加到手机主屏幕（Safari 底部分享按钮 → 添加到主屏幕），以后从主屏幕打开，打勾记录才不会丢。</li>' +
-      '<li>确认家附近健身房的营业时间；没有卡就办卡，并约一次教练带你认器械（先学 A、C 日的动作）。</li>' +
-      '<li>空腹称体重，量腰围、臀围，拍一张正面和侧面照片，写进日志。以后每两周量一次。</li>' +
-      '<li>准备：跑鞋、体重秤、带去学校的运动 T 恤和湿巾（校园跑完换衣服用）、水杯。</li>' +
-      '<li>在手机上装一个有语音模式的 AI App，备忘录里建两条笔记："句子本""提示词库"。</li>' +
-      '<li>看一遍下面的"本周目标"和"训练""饮食"页。</li></ol>');
-    bizItem('10:40', '12:00');
-    meal('12:15', '12:45', 'lh');
-    add('12:45', '13:05', 'rest', '午休 20 分钟', '');
-    words('13:10', '14:10');
-    listen('14:15', '14:45');
-    eng('14:50', '15:40', '先试一次，熟悉流程');
-    add('15:40', '17:00', 'free', '自由时间', '');
-    gram('17:00', '17:40');
-    meal('18:00', '18:40', 'dh');
-    add('19:00', '19:50', 'meet', '阿曼项目启动会（和家人，40～50 分钟）', '照着上午列的清单逐条问，结论写进家庭群请家人确认（手册 1.5、5.1 第 1～2 周）。还要讲清楚这 6 周的安排：每周目标、哪几天在学校、要家人帮的事（办资质、联系老客户工厂、陪你去银行、看选品）。定好每周日 19:00 开周会。');
-    read('19:55', '20:30');
-    wnight('20:30', '20:50');
-    review('20:50', '21:05');
-    sleep('22:30');
+  // 考试日：考试时间以通知为准
+  if (key === DRONE.exam) {
+    wake('06:30', '06:40');
+    run('06:45', '07:00', '小区，慢跑放松', 15);
+    meal('07:10', '07:35', 'b');
+    add('07:40', '08:30', 'drone', '考前只看错题那一页', '不做新题。把老错的知识点看一遍，带好身份证和考试通知要求的东西。');
+    add('08:40', '', 'exam', '无人机理论考试', '<p>按考试通知的时间和地点出发，提前 30 分钟到。答题：先把会的全做完，标记不确定的，最后回头检查。</p><p class="tip">考试和上午 10:20 的课冲突的话，提前跟老师请假。考试时间定了告诉 Claude，把这一天重排。</p>');
+    klass(cls[0]);
+    meal('12:05', '12:35', 'lc');
+    add('12:40', '13:40', 'free', '考完了，休息一下', '不管考得怎样，先放松。成绩出来写进日志。');
+    bizItem('13:45', '14:30');
+    back('14:40', '16:00');
+    meal('16:05', '16:15', 'sn');
+    gym('16:20', '17:35');
+    meal('17:45', '18:25', 'dh');
+    gram('18:35', '19:15');
+    school('19:20', '20:20');
+    read('20:25', '21:05');
+    wnight('21:05', '21:15');
+    review('21:15', '21:30');
+    sleep('23:00');
     return L;
   }
 
@@ -3211,42 +2013,44 @@ function buildDay(date) {
     wake('07:00', '07:10');
     run('07:15', '07:45', '小区或公园，今天放慢', runMin - 5);
     meal('07:50', '08:20', 'b');
-    words('08:30', '09:30');
-    bizItem('09:35', '11:00');
-    if (g) { gym('11:10', '12:25'); meal('12:30', '13:00', 'lh'); }
-    else { eng('11:10', '12:00'); meal('12:15', '12:45', 'lh'); }
-    add('13:00', '15:30', 'free', '自由时间：休息', '睡个午觉、见朋友、逛街都行。这是一周里最长的一段休息，用来恢复。');
-    if (g) eng('15:30', '16:20'); else listen('15:30', '16:10');
-    read('16:25', '17:10');
+    wapp('08:25', '08:50');
+    if (dr) drone('08:55', '10:25', 'main'); else bizItem('08:55', '10:25');
+    if (g) gym('10:35', '11:50'); else if (dr) bizItem('10:35', '11:50'); else add('10:35', '11:50', 'free', '拉伸放松 + 整理房间', '');
+    meal('12:00', '12:30', 'lh');
+    add('12:30', '14:00', 'free', '自由时间：午睡、休息', '睡个午觉、见朋友都行。');
+    makeup('14:00', '15:00');
+    if (dr) drone('15:10', '16:10', 'second'); else add('15:10', '16:10', 'free', '自由时间', '');
+    read('16:15', '17:00');
     meal('17:45', '18:30', 'dh');
-    add('19:00', '19:40', 'meet', '和家人聊这周（10～20 分钟）', '讲本周赚了多少、花了多少、做了什么、下周打算做什么；问家里收尾需要你帮什么（新手册 1.4）。不用正式开会，吃饭时说就行。家里出事的时候，家人知道你在稳稳往前走，本身就是在帮家里。');
-    add('19:45', '20:15', 'review', '每周复盘 + 合并句子本', '① 对照"本周目标"打勾；② 把这周的句子本合并成一份（开口计划：每周日 10 分钟）；③ 体重写进日志，和上周比；④ 看一眼下周的安排。');
+    add('19:00', '19:40', 'meet', '和家人聊这周（10～20 分钟）', '讲本周独立站做到哪、花了多少钱、下周打算做什么。不用正式开会，吃饭时说就行。');
+    add('19:45', '20:15', 'review', '每周复盘', '① 对照"本周目标"打勾；② 独立站写三句话：花了多少钱、做到哪一步、下周做什么（计划书 10.2）；③ 体重写进日志，和上周比；④ 外快线索：这周学会的哪件事以后可以帮别人做（例如开 Shopify、拍产品图、写英文详情），记一条；⑤ 看一眼下周的安排。');
     gram('20:15', '20:50');
-    if (!g) add('20:50', '21:10', 'free', '拉伸放松 15 分钟', '泡脚或热水澡，拉伸大腿、臀部、背。');
+    if (dr) drone('20:55', '21:20', 'wrong'); else add('20:55', '21:15', 'free', '拉伸放松 15 分钟', '泡脚或热水澡，拉伸大腿、臀部、背。');
     sleep('22:30');
     return L;
   }
 
   if (!cls.length && dow === 5) { // 周六
-    const out = biz && biz[2];
     wake('06:45', '06:55');
     run('07:00', '07:40', '小区或公园');
     meal('07:50', '08:20', 'b');
-    bizItem('08:40', '12:00', out ? '今天外出。出门前读一遍话术，带上手机记价格。说出第一句就算完成。' : '');
-    meal('12:15', '12:45', out ? 'lc' : 'lh');
+    wapp('08:20', '08:45');
+    drone('08:50', '10:20', 'main');
+    bizItem('10:30', '12:00');
+    meal('12:15', '12:45', 'lh');
     add('12:45', '13:05', 'rest', '午休 20 分钟', '');
-    words('13:10', '14:10');
-    eng('14:15', '15:10');
-    gram('15:15', '16:00');
+    drone('13:10', '14:10', 'second');
+    gram('14:15', '15:00');
+    add('15:00', '16:00', 'free', '自由时间', '');
     meal('16:00', '16:10', 'sn');
     gym('16:20', '17:35');
     meal('17:45', '18:25', 'dh');
     school('18:40', '19:40');
-    listen('19:45', '20:15');
+    drone('19:45', '20:15', 'wrong');
     read('20:20', '21:00');
-    wnight('21:00', '21:20');
-    review('21:20', '21:35');
-    add('21:35', '22:30', 'free', '自由时间', '');
+    wnight('21:00', '21:10');
+    review('21:10', '21:25');
+    add('21:25', '22:30', 'free', '自由时间', '');
     sleep('23:00');
     return L;
   }
@@ -3256,25 +2060,24 @@ function buildDay(date) {
     run('06:45', '07:20', '小区或公园');
     add('07:20', '07:35', 'rest', '拉伸 + 洗澡', '');
     meal('07:35', '08:00', 'b');
-    wrev('08:00', '08:20');
-    news('08:20', '08:30');
-    bizItem('08:30', '10:30', '上午头脑最清醒，先做这件最重要的事。打电话放在 9 点以后。');
-    meal('10:30', '10:40', 'sn');
-    words('10:40', '11:40');
-    eng('11:40', '12:20');
-    meal('12:20', '12:50', 'lh');
-    add('12:50', '13:10', 'rest', '午休 20 分钟', '');
-    if (!hl('13:15', '14:45')) biz2('13:15', '14:45');
-    if (!ai('14:45', '15:30')) biz2('14:45', '15:30');
-    listen('15:30', '16:00');
+    wapp('08:00', '08:25');
+    bizItem('08:30', '10:00', '上午头脑最清醒，先做这件最重要的事。打电话放在 9 点以后。');
+    meal('10:00', '10:10', 'sn');
+    drone('10:15', '11:45', 'main');
+    meal('12:00', '12:30', 'lh');
+    add('12:30', '12:50', 'rest', '午休 20 分钟', '');
+    drone('13:00', '14:00', 'second');
+    biz2('14:05', '14:50');
+    add('14:50', '16:00', 'free', '自由时间', '');
     meal('16:00', '16:10', 'sn');
     gym('16:20', '17:35');
     meal('17:45', '18:25', 'dh');
     gram('18:35', '19:15');
     school('19:20', '20:20');
-    read('20:25', '21:05');
-    wnight('21:05', '21:25');
-    review('21:25', '21:40');
+    drone('20:25', '20:50', 'wrong');
+    read('20:55', '21:30');
+    wnight('21:30', '21:40');
+    review('21:40', '21:55');
     sleep('23:00');
     return L;
   }
@@ -3284,98 +2087,103 @@ function buildDay(date) {
     run('06:45', '07:15', '小区或公园', Math.min(runMin, 30));
     add('07:15', '07:30', 'rest', '拉伸 + 洗澡', '');
     meal('07:30', '07:50', 'b');
-    eng('07:50', '08:40', '在家练完再出门');
+    wapp('07:50', '08:15');
+    drone('08:15', '08:40', 'am', '出门前先刷 25 分钟。');
     go('08:45', '10:15');
     klass(cls[0]);
     notes('11:50', '12:05');
     meal('12:05', '12:35', 'lc');
-    words('12:35', '13:35', '在图书馆做，戴耳机听读音，小声跟读。');
-    bizItem('13:35', '15:00', '在图书馆做；要打电话就去走廊或空教室。');
-    if (!ai('15:00', '15:40')) biz2('15:00', '15:40');
-    back('15:45', '17:00', dow === 2 ? '顺便：' + HL_WED[1] : '');
+    drone('12:40', '14:10', 'main', '在图书馆做。');
+    bizItem('14:15', '15:40', '在图书馆做；要打电话就去走廊或空教室。');
+    back('15:45', '17:00');
     meal('17:00', '17:10', 'sn');
     gym('17:15', '18:30');
     meal('18:40', '19:15', 'dh');
-    gram('19:20', '20:00');
-    if (!(dow === 0 && hl('20:05', '20:50'))) biz2('20:05', '20:50');
-    school('20:55', '21:35');
-    wnight('21:35', '21:55');
-    review('21:55', '22:10');
-    sleep('23:00');
+    drone('19:20', '20:20', 'second');
+    gram('20:25', '21:00');
+    school('21:05', '21:40');
+    drone('21:45', '22:10', 'wrong');
+    wnight('22:10', '22:20');
+    review('22:20', '22:35');
+    sleep('23:15');
     return L;
   }
 
   // 下午有课：不在家跑，改校园跑
   wake('06:50', '07:00');
   meal('07:00', '07:20', 'b');
-  eng('07:25', '08:35', '在家练完再出门');
+  wapp('07:25', '07:50');
+  drone('07:55', '08:40', 'am', '出门前先刷 45 分钟。');
   go('08:45', '10:15');
   klass(cls[0]);
   notes('11:50', '12:05');
   if (sig === '3,5,7') { // 周三：网球课
     run('12:05', '12:25', '校园，今天有网球课，跑短一点', 15);
     meal('12:30', '13:00', 'lc');
-    words('13:00', '13:55', '在图书馆做，戴耳机听读音，小声跟读。');
+    drone('13:00', '13:55', 'main', '在图书馆做。');
     klass(cls[1]);
     add('15:30', '15:50', 'rest', '换运动服', '');
     add('15:50', '17:20', 'cls', '网球课' + (cls[2].r ? '（' + cls[2].r + '）' : ''), '体育课也算今天的运动量，认真打。');
     meal('17:30', '18:00', 'dc');
-    back('18:05', '19:30', '顺便：' + HL_WED[1]);
+    back('18:05', '19:30');
     bizItem('19:40', '20:20', '今天时间短，挑最小的一步做。');
     gram('20:25', '21:00');
-    if (!ai('21:00', '21:40')) biz2('21:00', '21:40');
-    wnight('21:40', '22:00');
-    review('22:00', '22:15');
+    drone('21:00', '21:30', 'wrong');
+    wnight('21:30', '21:40');
+    review('21:40', '21:55');
     sleep('23:00');
     return L;
   }
   meal('12:05', '12:35', 'lc');
   if (sig === '3,5,9') { // 单周周二：上午、下午、晚上都有课
-    words('12:35', '13:35', '在图书馆做，戴耳机听读音，小声跟读。');
-    bizItem('13:35', '13:55', '挑最小的一步做：回一条消息或填一个数字。');
+    drone('12:35', '13:55', 'main', '在图书馆做。');
     klass(cls[1]);
     run('15:40', '16:20', '校园，跑完用湿巾擦汗、换 T 恤');
-    if (!ai('16:25', '17:10')) biz2('16:25', '17:10');
+    bizItem('16:25', '17:10', '挑最小的一步做。');
     meal('17:15', '17:45', 'dc');
     gram('17:45', '18:25');
     klass(cls[2]);
     back('20:00', '21:20');
-    wnight('21:25', '21:45');
-    review('21:45', '22:00');
+    drone('21:25', '21:50', 'wrong');
+    wnight('21:50', '22:00');
+    review('22:00', '22:15');
     sleep('23:00');
     return L;
   }
   if (sig === '3,9') { // 第 15 周周二
-    words('12:35', '13:35', '在图书馆做，戴耳机听读音，小声跟读。');
-    bizItem('13:35', '14:50', '图书馆；打电话去走廊。');
-    if (!ai('14:50', '15:35')) biz2('14:50', '15:35');
+    drone('12:35', '13:35', 'main', '在图书馆做。');
+    bizItem('13:40', '14:50', '图书馆；打电话去走廊。');
+    biz2('14:50', '15:35');
     run('15:40', '16:20', '校园，跑完用湿巾擦汗、换 T 恤');
     school('16:30', '17:15');
     meal('17:20', '17:50', 'dc');
     gram('17:50', '18:25');
     klass(cls[1]);
     back('20:00', '21:20');
-    wnight('21:25', '21:45');
-    review('21:45', '22:00');
+    drone('21:25', '21:50', 'wrong');
+    wnight('21:50', '22:00');
+    review('22:00', '22:15');
     sleep('23:00');
     return L;
   }
   // 单周周四：上午 + 下午第 7～8 节
-  words('12:35', '13:35', '在图书馆做，戴耳机听读音，小声跟读。');
+  drone('12:35', '13:35', 'main', '在图书馆做。');
   bizItem('13:35', '14:25', '图书馆；打电话去走廊。');
   run('14:30', '15:05', '校园，跑完用湿巾擦汗、换 T 恤');
-  if (!ai('15:05', '15:45')) biz2('15:05', '15:45');
+  drone('15:05', '15:45', 'second');
   klass(cls[1]);
   meal('17:25', '17:55', 'dc');
   back('18:00', '19:20');
   gym('19:35', '20:45');
   meal('20:50', '21:00', 'post');
   gram('21:00', '21:35');
-  wnight('21:35', '21:55');
-  review('21:55', '22:10');
-  sleep('23:15');
+  drone('21:35', '22:00', 'wrong');
+  wnight('22:00', '22:10');
+  review('22:10', '22:25');
+  sleep('23:30');
   return L;
 }
+
 
 // ---------- 存储 ----------
 const S = {
@@ -3398,32 +2206,44 @@ function pct(key) {
   return t ? Math.round(n / t * 100) : 0;
 }
 
+function renderHead() {
+  const p = pct(cur);
+  $('ring').style.setProperty('--p', p);
+  $('sub').textContent = p + '%';
+  renderStrip();
+  return p;
+}
+
 function renderDay() {
   const d = parse(cur), wk = weekOf(d), dow = (d.getDay() + 6) % 7, L = buildDay(d), done = S.get('done:' + cur, {});
   const today = ymd(new Date()) === cur, hm = nowHM();
   const st = STAGE[wk] || {}, wkKey = 'goal:' + wk, gd = S.get(wkKey, {});
-  let h = '<div class="stage"><div class="sname">第 ' + wk + ' 周 · ' + (st.name || '') + '</div><div class="goals">' +
-    (st.goal || []).map((g, i) => '<label><input type="checkbox" data-goal="' + i + '"' + (gd[i] ? ' checked' : '') + '> ' + g + '</label>').join('') + '</div></div>';
+  const left = dayDiff(cur, DRONE.exam);
+  let h = '<div class="stage"><div class="chips"><span class="chip">第 ' + wk + ' 周</span>' +
+    (left > 0 ? '<span class="chip hot">🚁 离无人机考试 ' + left + ' 天</span>' : left === 0 ? '<span class="chip hot">🚁 今天考试，加油</span>' : '') + '</div>' +
+    '<div class="sname">' + (st.name || '') + '</div><div class="goals">' +
+    (st.goal || []).map((g, i) => '<label><input type="checkbox" data-goal="' + i + '"' + (gd[i] ? ' checked' : '') + '><span>' + g + '</span></label>').join('') + '</div>' +
+    (st.stop ? '<p class="stop">止损：' + st.stop + '</p>' : '') + '</div>';
   h += '<div class="list">';
   L.forEach((x, i) => {
     const on = today && x.s <= hm && (x.e ? hm < x.e : false);
-    h += '<div class="item c-' + x.c + (done[i] ? ' done' : '') + (on ? ' now' : '') + '" data-i="' + i + '">' +
-      '<div class="tm">' + x.s + (x.e ? '<br><span>' + x.e + '</span>' : '') + '</div>' +
-      '<div class="bd"><div class="tt">' + ICON[x.c] + ' ' + x.t + (on ? ' <b class="nowtag">进行中</b>' : '') + '</div>' +
-      (x.d ? '<div class="dt">' + x.d + '</div>' : '') + '</div>' +
-      '<button class="ck" data-ck="' + i + '">' + (done[i] ? '✓' : '') + '</button></div>';
+    h += '<div class="item c-' + x.c + (done[i] ? ' done' : '') + (on ? ' now' : '') + (x.d ? ' has' : '') + '" data-i="' + i + '" style="--i:' + i + '">' +
+      '<div class="tm">' + x.s + (x.e ? '<span>' + x.e + '</span>' : '') + '</div>' +
+      '<div class="ic">' + ICON[x.c] + '</div>' +
+      '<div class="bd"><div class="tt">' + x.t + (on ? ' <b class="nowtag">进行中</b>' : '') + '</div>' +
+      (x.d ? '<div class="dtw"><div class="dt">' + x.d + '</div></div>' : '') + '</div>' +
+      '<button class="ck" data-ck="' + i + '" aria-label="完成"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button></div>';
   });
   h += '</div>';
   const lg = S.get('log:' + cur, {});
   h += '<div class="log"><h3>📝 日志</h3>' +
     '<label>体重（kg）<input inputmode="decimal" data-log="w" value="' + (lg.w || '') + '"></label>' +
     '<label>今天训练最重一组（例：臀推 30 kg × 10）<input data-log="g" value="' + esc(lg.g || '') + '"></label>' +
-    '<label>句子本（今天说不出来的句子）<textarea rows="3" data-log="s">' + esc(lg.s || '') + '</textarea></label>' +
+    (left >= 0 ? '<label>无人机：刷到第几题 / 模拟考几分<input data-log="d" value="' + esc(lg.d || '') + '"></label>' : '') +
     '<label>一句话复盘 + 明天最重要的事<textarea rows="2" data-log="r">' + esc(lg.r || '') + '</textarea></label></div>';
   $('main').innerHTML = h;
   $('title').textContent = (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + WD[dow];
-  $('sub').textContent = '完成 ' + pct(cur) + '%';
-  renderStrip();
+  renderHead();
   if (today) { const n = document.querySelector('.item.now'); if (n) n.scrollIntoView({block: 'center'}); }
 }
 
@@ -3431,38 +2251,37 @@ function renderStrip() {
   const d = parse(cur), mon = new Date(d.getTime() - ((d.getDay() + 6) % 7) * MS);
   let h = '';
   for (let i = 0; i < 7; i++) {
-    const x = new Date(mon.getTime() + i * MS), k = ymd(x), inR = k >= PLAN_START && k <= PLAN_END;
-    h += '<button class="dd' + (k === cur ? ' on' : '') + (k === ymd(new Date()) ? ' td' : '') + '"' + (inR ? ' data-go="' + k + '"' : ' disabled') + '>' +
-      WD[i].slice(1) + '<b>' + x.getDate() + '</b><i style="--p:' + (inR ? pct(k) : 0) + '%"></i></button>';
+    const x = new Date(mon.getTime() + i * MS), k = ymd(x), inR = k >= PLAN_START && k <= PLAN_END, p = inR ? pct(k) : 0;
+    h += '<button class="dd' + (k === cur ? ' on' : '') + (k === ymd(new Date()) ? ' td' : '') + (p === 100 ? ' full' : '') + (k === DRONE.exam ? ' ex' : '') + '"' + (inR ? ' data-go="' + k + '"' : ' disabled') + '>' +
+      WD[i].slice(1) + '<b>' + x.getDate() + '</b><i style="--p:' + p + '%"></i></button>';
   }
   $('strip').innerHTML = h;
 }
-
 function renderWeek() {
   const d = parse(cur), mon = new Date(d.getTime() - ((d.getDay() + 6) % 7) * MS), wk = weekOf(d);
-  let h = '<div class="card"><h3>第 ' + wk + ' 周概览</h3><table><tr><th>日期</th><th>课</th><th>健身</th><th>业务主任务</th><th>完成</th></tr>';
+  let h = '<div class="card"><h3>第 ' + wk + ' 周概览</h3><table><tr><th>日期</th><th>课</th><th>健身</th><th>独立站</th><th>完成</th></tr>';
   for (let i = 0; i < 7; i++) {
     const x = new Date(mon.getTime() + i * MS), k = ymd(x);
     if (k < PLAN_START || k > PLAN_END) continue;
     const L = buildDay(x), c = L.filter(y => y.c === 'cls').map(y => y.t).join('、') || '—';
     const gm = L.find(y => y.c === 'gym'), bz = L.find(y => y.c === 'biz');
     h += '<tr data-go="' + k + '"><td>' + (x.getMonth() + 1) + '/' + x.getDate() + ' ' + WD[i] + '</td><td>' + c + '</td><td>' +
-      (gm ? gm.t.replace('健身房：', '') : '休息') + '</td><td>' + (bz ? bz.t : '—') + '</td><td>' + pct(k) + '%</td></tr>';
+      (gm ? gm.t.replace('健身房：', '') : '休息') + '</td><td>' + (bz ? bz.t.replace('独立站：', '') : '—') + '</td><td>' + pct(k) + '%</td></tr>';
   }
   h += '</table><p class="tip">点一行跳到那一天。</p></div>';
-  h += '<div class="card"><h3>阶段 0 总览（新手册 6.1 + 开口练习计划）</h3>' +
-    Object.keys(STAGE).map(w => '<p><b>第 ' + w + ' 周</b> ' + STAGE[w].name + '<br><span class="tip">开口：' + STAGE[w].level + '</span></p>').join('') + '</div>';
-  h += '<div class="card"><h3>这 6 周之后：阶段 1 的安排</h3><p class="tip">原定 2027 年 3 月的阿曼考察已经取消（新手册 6.1）。寒假前再一起排成每天的计划。</p>' +
+  h += '<div class="card"><h3>独立站前 5 周（计划书第 12 章）</h3>' +
+    Object.keys(STAGE).map(w => '<p><b>第 ' + w + ' 周</b> ' + STAGE[w].name + '<br><span class="tip">止损：' + STAGE[w].stop + '</span></p>').join('') + '</div>';
+  h += '<div class="card"><h3>第 6 周以后</h3><p class="tip">寒假前再一起排成每天的计划。</p>' +
     ROADMAP.map(r => '<p><b>' + r[0] + '</b><br>' + r[1] + '</p>').join('') + '</div>';
   $('main').innerHTML = h;
 }
 
 function renderGym() {
-  let h = '<div class="card"><h3>每周安排（5 练，减脂塑形）</h3><p>单周（第 11、13、15 周）：周一 A、周四 B、周五 C、周六 D、周日 E。<br>双周（第 12、14、16 周）：周一 A、周二 B、周四 C、周五 D、周六 E，周日休息。<br>周三有网球课，不去健身房。</p><ul>' +
+  let h = '<div class="card"><h3>每周安排（5 练，减脂塑形）</h3><p>单周（第 13、15 周）：周一 A、周四 B、周五 C、周六 D、周日 E。<br>双周（第 12、14、16 周）：周一 A、周二 B、周四 C、周五 D、周六 E，周日休息。<br>周三有网球课，不去健身房。</p><ul>' +
     GYM_RULES.map(x => '<li>' + x + '</li>').join('') + '</ul></div>';
   Object.keys(WORKOUTS).forEach(k => { h += '<div class="card"><h3>' + WORKOUTS[k].name + '</h3>' + gymDetail(k) + '</div>'; });
   h += '<div class="card"><h3>跑步</h3><p>每天都跑。早上没课或只有上午课：起床后在家附近跑；下午有课：在校园跑。每周时长：' +
-    Object.keys(RUN_WEEK).map(w => '第 ' + w + ' 周 ' + RUN_WEEK[w] + ' 分钟').join('，') + '。</p><ul>' + RUN_RULES.map(x => '<li>' + x + '</li>').join('') + '</ul></div>';
+    Object.keys(RUN_WEEK).filter(w => w >= 12).map(w => '第 ' + w + ' 周 ' + RUN_WEEK[w] + ' 分钟').join('，') + '。</p><ul>' + RUN_RULES.map(x => '<li>' + x + '</li>').join('') + '</ul></div>';
   $('main').innerHTML = h;
 }
 
@@ -3471,6 +2290,19 @@ function renderFood() {
   h += '<div class="card"><h3>一周菜单（每天的具体安排在"今日"里）</h3><table><tr><th></th><th>早餐</th><th>午餐（家）</th><th>晚餐（家）</th><th>加餐</th></tr>' +
     WD.map((w, i) => '<tr><td>' + w + '</td><td>' + MEAL.b[i] + '</td><td>' + MEAL.lh[i] + '</td><td>' + MEAL.dh[i] + '</td><td>' + MEAL.snack[i] + '</td></tr>').join('') +
     '</table><p><b>在学校吃：</b>' + MEAL.dc + '</p><p><b>练后：</b>' + MEAL.post + '</p></div>';
+  $('main').innerHTML = h;
+}
+
+// 英语页：背单词方法 + 化妆练习进度
+function renderEng() {
+  let h = '<div class="card hero"><h3>🔤 背单词：' + WAPP.app + '，每天 ' + WAPP.perDay + ' 个新词</h3>' +
+    '<p><b>什么时候背：</b>早上起床、早饭后 25 分钟背新词 + 清复习；睡前 10 分钟把今天的词再过一遍。每天的具体时间已经排进“今日”。</p>' +
+    WAPP.why.map(x => '<p>' + x + '</p>').join('') + '</div>';
+  h += '<div class="card"><h3>选哪本词书</h3><ol class="steps">' + WAPP.books.map(b => '<li><b>' + b[0] + '</b><br>' + b[1] + '</li>').join('') + '</ol>' +
+    '<p class="tip">每天 20 个：新词 20 个加上复习，一共 20～30 分钟，忙的时候也撑得住。连续两周都能当天背完，再加到 30 个。</p></div>';
+  h += '<div class="card"><h3>背完以后怎么记牢</h3><ul>' + WAPP.review.map(x => '<li>' + x + '</li>').join('') + '</ul></div>';
+  h += '<div class="card"><h3>💄 化妆练习（每周日 14:00）</h3>' +
+    Object.keys(MAKEUP).map(w => '<p><b>第 ' + w + ' 周：' + MAKEUP[w][0] + '</b><br>' + MAKEUP[w][1] + '</p>').join('') + '<p class="tip">' + MAKEUP_TIP + '</p></div>';
   $('main').innerHTML = h;
 }
 
@@ -3512,43 +2344,53 @@ function renderGram() {
   $('main').innerHTML = h + '</div>';
 }
 
-function renderWords() {
-  const t = ymd(new Date()), upto = t < PLAN_START ? PLAN_START : t;
-  let h = '<div class="card"><h3>单词本（' + WORDS.length + ' 个，按每天的顺序）</h3><p class="tip">' + catCount(WORDS.map((x, i) => i)) + '。音标是美式。🔊 读单词，▶ 读例句（用 iPhone 自带的英语声音，静音键要关掉）。</p>' +
-    '<input id="wsearch" placeholder="搜索英文或中文" style="width:100%;font-size:16px;padding:8px;border:1px solid #ddd;border-radius:8px"></div>';
-  const days = Object.keys(WDAY).filter(k => !isReview(k) && WDAY[k].length);
-  h += '<div id="wlist">' + days.map(k => '<div class="card wday" data-k="' + k + '"><h3>' + (parse(k).getMonth() + 1) + '/' + parse(k).getDate() + (k <= upto ? '' : '（还没到）') + '</h3>' +
-    WDAY[k].map(wordCard).join('') + '</div>').join('') + '</div>';
-  $('main').innerHTML = h;
-}
-
 function renderHelp() {
   $('main').innerHTML = '<div class="card"><h3>怎么用</h3><ul>' +
     '<li>每天打开就是今天的安排。点任务右边的圆圈打勾，点任务本身展开详细做法。</li>' +
-    '<li>上方一排是本周 7 天，圆环是完成度。左右按钮切换日期。</li>' +
+    '<li>上方一排是本周 7 天，下面的细条是完成度。左右按钮切换日期。</li>' +
     '<li>打勾和日志只存在这台手机的浏览器里。<b>请从主屏幕图标打开</b>：Safari 对普通网页的数据最多保留 7 天不访问就可能清掉，添加到主屏幕后不会。</li>' +
     '<li>每周日点下面"导出备份"，存到"文件"App 里。换手机或数据丢了，用"导入备份"恢复。</li></ul>' +
     '<p><button id="exp">导出备份</button> <label class="imp">导入备份<input type="file" id="imp" accept=".json"></label></p></div>' +
     '<div class="card"><h3>这份计划依据什么</h3><ul>' +
-    '<li>课程表：第 11～16 周（2026-11-16 至 12-27）。</li>' +
-    '<li>业务任务：《新方案实战手册（货代关闭后）》第 6 章阶段 0（2026 年 11 月 16 日起）。家里计划把货代公司关掉，原来阶段 A 的资质、选品、阿曼出差准备都停了。这 6 周做四件事：帮家里收尾（第 2 章）、查清楚爸爸新公司的情况（2.9）、路线一给小货代做 AI 报价表和对账（第 3 章）、投实习（第 4 章）。阿曼放到寒假以后，见“本周”页底部。</li>' +
-    '<li>时间比例：新手册 6.2（阶段 0：学业 12～18 小时、帮家里收尾 15～25 小时、路线一 15～20 小时、英语 3～5 小时、每天睡够 7 小时）。</li>' +
-    '<li>英语：每天开口 4 步 + 新单词约 ' + (WDAY[LDAYS[1]] || []).length + ' 个（上车或早上复习前几天的词，睡前自测当天的词，周日复习本周的）+ 听力跟读 + 语法手册 1 课（周六 2 课，周日复习）。单词共 ' + WORDS.length + ' 个（' + catCount(WORDS.map((x, i) => i)) + '），每个有读音、音标、词性、意思和例句。</li>' +
-    '<li>每周固定：周一填收入表（第 1 周是做收尾表），周三回家路上问一句家里收尾的进展，周五做一项收尾工作（第 2 章）。华磊系统停用前把数据全部导出，只导出、不改不删。</li></ul>' +
-    '<p class="tip">期末考试日期出来后，告诉 Claude，把考试周和前两周的任务再调轻（新手册 6.2：考试周全力复习，项目只做维护）。</p></div>';
+    '<li>课程表：第 12～16 周（2026-11-24 至 12-27）。</li>' +
+    '<li>无人机理论考试 12 月 8 日：11/24～12/2 把题库平分成 9 天刷第一遍，12/3～12/7 每天模拟考 + 错题。题库总数按 3000 题估算，在任一刷题块里改成你 App 的实际题数，每天的题号会自动重算。</li>' +
+    '<li>独立站：《广州OPC独立站项目计划书》第 12 章前 90 天，从 11/23 这周算第 1 周。期末两周每件业务控制在 1 小时内。货代收尾和阿曼的任务已经删掉。</li>' +
+    '<li>英语：用 ' + WAPP.app + ' 每天 20 个新词（早上）+ 睡前过一遍 + 语法手册 1 课（周六 2 课，周日复习）。AI 口语陪练不再排进计划。</li>' +
+    '<li>化妆：每周日 14:00～15:00 练一个部位，第 16 周整妆计时。</li></ul>' +
+    '<p class="tip">期末考试日期出来后，告诉 Claude，把考试周的任务再调轻。</p></div>';
 }
 
 function render() {
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
   $('daybar').style.display = tab === 'day' ? '' : 'none';
-  ({day: renderDay, week: renderWeek, gym: renderGym, food: renderFood, gram: renderGram, words: renderWords, help: renderHelp})[tab]();
+  ({day: renderDay, week: renderWeek, gym: renderGym, food: renderFood, gram: renderGram, eng: renderEng, help: renderHelp})[tab]();
+  const m = $('main'); m.classList.remove('enter'); void m.offsetWidth; m.classList.add('enter'); setTimeout(() => m.classList.remove('enter'), 900);
   if (tab !== 'day') window.scrollTo(0, 0);
 }
 
+// 打满 100% 时撒一把彩纸
+function confetti() {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const box = document.createElement('div'); box.className = 'confetti';
+  const cols = ['#ff7aa2', '#ffb84d', '#7c5cff', '#2ec4b6', '#ffd23f'];
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('i');
+    s.style.cssText = 'left:' + Math.random() * 100 + '%;background:' + cols[i % 5] + ';animation-delay:' + Math.random() * 0.3 + 's;--x:' + (Math.random() * 120 - 60) + 'px;--r:' + Math.random() * 720 + 'deg';
+    box.appendChild(s);
+  }
+  document.body.appendChild(box); setTimeout(() => box.remove(), 2200);
+}
+
+function toggleDone(i) {
+  const d = S.get('done:' + cur, {}); d[i] = !d[i]; S.set('done:' + cur, d);
+  const it = document.querySelector('.item[data-i="' + i + '"]');
+  if (it) { it.classList.toggle('done', !!d[i]); if (d[i]) { it.classList.remove('pop'); void it.offsetWidth; it.classList.add('pop'); } }
+  if (renderHead() === 100 && d[i]) confetti();
+}
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-ck],[data-go],[data-tab],[data-l],[data-mark],[data-say],.opt,#prev,#next,#today,#lclose,#exp,.item');
   if (!t) return;
-  if (t.dataset.ck != null) { const d = S.get('done:' + cur, {}); d[t.dataset.ck] = !d[t.dataset.ck]; S.set('done:' + cur, d); renderDay(); return; }
+  if (t.dataset.ck != null) { toggleDone(t.dataset.ck); return; }
   if (t.dataset.go) { cur = t.dataset.go; tab = 'day'; render(); window.scrollTo(0, 0); return; }
   if (t.dataset.tab) { tab = t.dataset.tab; render(); return; }
   if (t.dataset.l != null) { openLesson(+t.dataset.l); return; }
@@ -3572,12 +2414,13 @@ document.addEventListener('click', e => {
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(o)], {type: 'application/json'}));
     a.download = '每日计划备份-' + ymd(new Date()) + '.json'; a.click(); return;
   }
-  if (t.classList.contains('item') && !e.target.closest('button,a,input,textarea')) t.classList.toggle('open');
+  if (t.classList.contains('item') && !e.target.closest('button,a,input,textarea,label')) t.classList.toggle('open');
 });
 
 document.addEventListener('change', e => {
   const t = e.target;
   if (t.dataset.goal != null) { const k = 'goal:' + weekOf(parse(cur)), g = S.get(k, {}); g[t.dataset.goal] = t.checked; S.set(k, g); }
+  if (t.dataset.drtotal != null) { const n = parseInt(t.value, 10); if (n > 0) { S.set('drTotal', n); renderDay(); } }
   if (t.id === 'imp' && t.files[0]) {
     const r = new FileReader();
     r.onload = () => { try { const o = JSON.parse(r.result); Object.keys(o).forEach(k => k.startsWith('plan:') && localStorage.setItem(k, o[k])); alert('已恢复'); render(); } catch (x) { alert('文件不对'); } };
@@ -3586,13 +2429,13 @@ document.addEventListener('change', e => {
 });
 document.addEventListener('input', e => {
   const t = e.target;
-  if (t.id === 'wsearch') { const q = t.value.trim().toLowerCase(); document.querySelectorAll('#wlist .wd').forEach(x => x.style.display = !q || x.textContent.toLowerCase().includes(q) ? '' : 'none'); return; }
   if (t.dataset.log == null) return;
   const lg = S.get('log:' + cur, {}); lg[t.dataset.log] = t.value; S.set('log:' + cur, lg);
 });
 
 render();
 setInterval(() => { if (tab === 'day' && cur === ymd(new Date()) && !document.querySelector('.item.open') && document.activeElement.tagName === 'BODY') renderDay(); }, 300000);
+
 
 </script>
 </body>
